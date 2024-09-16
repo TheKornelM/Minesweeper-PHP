@@ -2,29 +2,13 @@
 
 <head>
     <title>Minesweeper by TheKornel</title>
-    <script type="module">
-        "use strict";
-
-        import Field from "./src/Field.js";
-        import Minesweeper from "./src/Minesweeper.js"
-        import BoardView from "./src/BoardView.js";
-
-        const field = new Field();
-
-        // For test purposes
-        const bw = new BoardView();
-
-        bw.board.selectField(0,0);
-        bw.board.unrevealField(0,0);
-        bw.drawTable();
-
-    </script>
+    <script src="./src/Main.js" type="module"></script>
 </head>
 
 <body>
     <h1 id="remain-fields"></h1>
     <div id="content"></div>
-    <canvas id="board"></canvas>
+    <canvas id="board"> </canvas>
 </body>
 
 </html>
