@@ -1,6 +1,5 @@
 "use strict";
 
-
 import State from "./State.js";
 import Field from "./Field.js";
 
@@ -36,12 +35,10 @@ export default class Minesweeper {
         this.mineCount = 0;
         this.hasRevealedMine = false;
         this.remainFields = this.size * this.size;
-        this.mineCount = (this.size * this.size) * 0.16;
+        this.mineCount = this.size * this.size * 0.16;
         this.flaggedFields = 0;
         this.#allocateFields();
     }
-
-
 
     // fieldExists: ellenőrzi, hogy az adott mező hely létezik-e
     fieldExists(row, column) {
@@ -51,10 +48,11 @@ export default class Minesweeper {
     selectField(row, column) {
         /* Korábban felfedett mezőt, illetve zászlóval jelölt helyet
           nem választhat a felhasználó, előtte el kell azt távolítania. */
-        if (this.fields[row][column].state == State.REVEALED ||
-            this.fields[row][column].state == State.FLAGGED)
+        if (
+            this.fields[row][column].state == State.REVEALED ||
+            this.fields[row][column].state == State.FLAGGED
+        )
             return;
-
 
         if (this.fields[row][column].hasMine) {
             this.hasRevealedMine = true;
@@ -72,7 +70,10 @@ export default class Minesweeper {
     unrevealField(row, column) {
         /* Amennyiben az adott mező nem érvényes (pl. negatív szám), vagy
           korábban már felfedésre került az adott hely, akkor a rekurzió befejeződik. */
-        if (!this.fieldExists(row, column) || this.fields[row][column].state == State.REVEALED) {
+        if (
+            !this.fieldExists(row, column) ||
+            this.fields[row][column].state == State.REVEALED
+        ) {
             return;
         }
 
@@ -101,8 +102,7 @@ export default class Minesweeper {
         if (this.fields[row][column].state == State.FLAGGED) {
             this.fields[row][column].state = State.UNSELECTED;
             this.flaggedFields--;
-        }
-        else if (this.fields[row][column].state == State.UNSELECTED) {
+        } else if (this.fields[row][column].state == State.UNSELECTED) {
             this.fields[row][column].state = State.FLAGGED;
             this.flaggedFields++;
         }
@@ -127,27 +127,33 @@ export default class Minesweeper {
         }
     }
 
-
     /* Aknák generálásáért felelős algoritmus
       firstStepRow: első kiválasztott akna sorszáma
       firstStepColumn: első kiválasztott akna oszlopszáma.
       Ezek szükségesek, hogy oda ne kerüljön akna.
     */
     #generateMines(firstStepRow, firstStepColumn) {
-        for (let i = 0; i < this.mineCount;) {
+        for (let i = 0; i < this.mineCount; ) {
             let row = Math.floor(Math.random() * this.size);
             let column = Math.floor(Math.random() * this.size);
-            if (!this.fields[row][column].hasMine && !(row == firstStepRow && column == firstStepColumn)) {
+            if (
+                !this.fields[row][column].hasMine &&
+                !(row == firstStepRow && column == firstStepColumn)
+            ) {
                 this.fields[row][column].hasMine = true;
                 i++;
                 for (let j = -1; j <= 1; j++) {
                     for (let k = -1; k <= 1; k++) {
-                        if (this.fieldExists(row + j, column + k) && !(j == 0 && k == 0)) {
-                            this.fields[row + j][column + k].neighborMineCount++;
+                        if (
+                            this.fieldExists(row + j, column + k) &&
+                            !(j == 0 && k == 0)
+                        ) {
+                            this.fields[row + j][column + k]
+                                .neighborMineCount++;
                         }
                     }
                 }
             }
         }
     }
-};
+}

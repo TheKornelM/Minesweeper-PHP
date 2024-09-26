@@ -1,0 +1,13 @@
+button.field {
+    width: 5%;
+    min-width: 50px;
+    aspect-ratio: 1;
+}
+
+html {
+    background-color: lightgray;
+}
+
+.unrevealed{
+    background-color: gray;
+}
