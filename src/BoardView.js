@@ -44,7 +44,7 @@ export default class BoardView {
             mineCount: ${this.board.mineCount}\n`);
     }
 
-    displayField(row, column) {
+    #displayField(row, column) {
         switch (this.board.fields[row][column].state) {
             case State.UNSELECTED:
                 if (
@@ -65,5 +65,19 @@ export default class BoardView {
             case State.FLAGGED:
                 return "F";
         }
+    }
+
+    unrevealArea(event, row, column) {
+        this.board.selectField(row, column);
+        let unrevealedFields = this.board.unrevealField(row, column);
+
+        event.target.value = this.#displayField(row, column);
+
+        unrevealedFields.forEach((item) => {
+            document.getElementById(`${item.id}`).value = this.#displayField(
+                item.row,
+                item.column
+            );
+        });
     }
 }
