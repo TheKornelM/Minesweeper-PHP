@@ -8,7 +8,9 @@ bw.drawTable();
 const wrapper = document.getElementById("content");
 wrapper.addEventListener("click", (event) => {
     const isButton =
-        event.target.nodeName === "INPUT" && event.target.type === "button";
+        event.target.nodeName === "INPUT" &&
+        event.target.type === "button" &&
+        event.target.classList.contains("field");
 
     if (!isButton) {
         return;

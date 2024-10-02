@@ -32,10 +32,11 @@ export default class Minesweeper {
 
     constructor(s) {
         this.size = s;
+        let tableSize = this.size * this.size;
         this.mineCount = 0;
         this.hasRevealedMine = false;
-        this.remainFields = this.size * this.size;
-        this.mineCount = this.size * this.size * 0.16;
+        this.mineCount = parseInt(tableSize * 0.16);
+        this.remainFields = tableSize;
         this.flaggedFields = 0;
         this.#allocateFields();
     }

@@ -1,7 +1,8 @@
-input[type=button] {
+#content input[type=button] {
     width: 5%;
     min-width: 50px;
     aspect-ratio: 1;
+    font-weight: bold;
 }
 
 html {
@@ -10,4 +11,28 @@ html {
 
 .unrevealed{
     background-color: gray;
+}
+
+#content input[type=button][value="1"]{
+    color: blue;
+}
+
+#content input[type=button][value="2"]{
+    color: red;
+}
+
+#content input[type=button][value="3"]{
+    color: green;
+}
+
+#content input[type=button][value="4"]{
+    color: darkblue;
+}
+
+#content input[type=button][value="5"]{
+    color: darkred;
+}
+
+#content input[type=button][value="6"]{
+    color: cyan;
 }

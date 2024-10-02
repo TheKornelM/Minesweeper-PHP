@@ -7,6 +7,7 @@ export default class BoardView {
         this.board = new Minesweeper(7);
     }
 
+    // For debug purpouses
     drawTableString() {
         document.getElementById(
             "remain-fields"
@@ -23,9 +24,7 @@ export default class BoardView {
     }
 
     drawTable() {
-        document.getElementById(
-            "remain-fields"
-        ).innerHTML = `Remain fields: ${this.board.remainFields}`;
+        this.#printRemainFields();
         let p = document.getElementById("content");
         for (let i = 0; i < this.board.size; i++) {
             for (let j = 0; j < this.board.size; j++) {
@@ -67,17 +66,26 @@ export default class BoardView {
         }
     }
 
+    #printRemainFields() {
+        document.getElementById(
+            "remain-fields"
+        ).innerHTML = `Remain mines: ${this.board.mineCount}`;
+    }
+
     unrevealArea(event, row, column) {
         this.board.selectField(row, column);
         let unrevealedFields = this.board.unrevealField(row, column);
 
-        event.target.value = this.#displayField(row, column);
+        let neighborMinesCount = this.#displayField(row, column);
+        event.target.value = neighborMinesCount == 0 ? "" : neighborMinesCount;
 
         unrevealedFields.forEach((item) => {
-            document.getElementById(`${item.id}`).value = this.#displayField(
-                item.row,
-                item.column
-            );
+            neighborMinesCount = this.#displayField(item.row, item.column);
+            const button = document.getElementById(`${item.id}`);
+            button.value = neighborMinesCount == 0 ? "" : neighborMinesCount;
+            button.classList.remove("unrevealed");
         });
+
+        this.#printRemainFields();
     }
 }
