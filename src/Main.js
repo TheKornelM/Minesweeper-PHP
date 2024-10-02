@@ -23,9 +23,7 @@ wrapper.addEventListener("click", (event) => {
 
     let row =
         (event.target.id - (event.target.id % bw.board.size)) / bw.board.size;
-    let column =
-        event.target.id -
-        (event.target.id % (bw.board.size - 1)) * bw.board.size;
+    let column = event.target.id - row * bw.board.size;
     alert(`Row: ${row}, column: ${column}`);
 
     //alert(event.target.id);
