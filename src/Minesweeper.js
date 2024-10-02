@@ -66,8 +66,47 @@ export default class Minesweeper {
         }
     }
 
+    unrevealField(row, column, revealedFields = []) {
+        /* Amennyiben az adott mező nem érvényes (pl. negatív szám), vagy
+       korábban már felfedésre került az adott hely, akkor a rekurzió befejeződik. */
+        if (
+            !this.fieldExists(row, column) ||
+            this.fields[row][column].state == State.REVEALED
+        ) {
+            return revealedFields;
+        }
+
+        if (this.fields[row][column].state == State.FLAGGED) {
+            this.flaggedFields--;
+        }
+
+        this.fields[row][column].state = State.REVEALED;
+        this.remainFields--;
+
+        // Store row and column as an object
+        const fieldId = row * this.size + column;
+        revealedFields.push({ id: fieldId, row: row, column: column });
+
+        /* Ha egy hely körül van szomszédos akna, akkor azt a helyet felfedjük,
+       és utána fejeződik be a rekurzió. */
+        if (this.fields[row][column].neighborMineCount != 0) {
+            return revealedFields;
+        }
+
+        // Felfedjük a szomszédos mezőket.
+        for (let i = -1; i <= 1; i++) {
+            for (let j = -1; j <= 1; j++) {
+                this.unrevealField(row + i, column + j, revealedFields);
+            }
+        }
+
+        // Return the list of revealed fields as objects with row and column
+        return revealedFields;
+    }
+
     // unrevealField: rekurzív algoritmus, ami felfedi a környező aknamentes mezőket
-    unrevealField(row, column) {
+    // Should return field ids
+    unrevealFieldOld(row, column) {
         /* Amennyiben az adott mező nem érvényes (pl. negatív szám), vagy
           korábban már felfedésre került az adott hely, akkor a rekurzió befejeződik. */
         if (

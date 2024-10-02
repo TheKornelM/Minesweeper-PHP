@@ -1,22 +1,15 @@
 "use strict";
 
-import Field from "./Field.js";
-import Minesweeper from "./Minesweeper.js";
 import BoardView from "./BoardView.js";
 
-const field = new Field();
-
-// For test purposes
 const bw = new BoardView();
-
-bw.board.selectField(0, 0);
-bw.board.unrevealField(0, 0);
 bw.drawTable();
 
 const wrapper = document.getElementById("content");
-
 wrapper.addEventListener("click", (event) => {
-    const isButton = event.target.nodeName === "BUTTON";
+    const isButton =
+        event.target.nodeName === "INPUT" && event.target.type === "button";
+
     if (!isButton) {
         return;
     }
@@ -24,7 +17,16 @@ wrapper.addEventListener("click", (event) => {
     let row =
         (event.target.id - (event.target.id % bw.board.size)) / bw.board.size;
     let column = event.target.id - row * bw.board.size;
-    alert(`Row: ${row}, column: ${column}`);
 
-    //alert(event.target.id);
+    bw.board.selectField(row, column);
+    let unrevealedFields = bw.board.unrevealField(row, column);
+
+    event.target.value = bw.displayField(row, column);
+
+    unrevealedFields.forEach((item) => {
+        document.getElementById(`${item.id}`).value = bw.displayField(
+            item.row,
+            item.column
+        );
+    });
 });

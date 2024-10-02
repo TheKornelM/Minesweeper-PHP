@@ -29,20 +29,14 @@ export default class BoardView {
         let p = document.getElementById("content");
         for (let i = 0; i < this.board.size; i++) {
             for (let j = 0; j < this.board.size; j++) {
-                let btn = document.createElement("button");
+                let btn = document.createElement("input");
+                btn.type = "button";
                 btn.classList += "field unrevealed";
                 btn.id = i * this.board.size + j;
-                //var t = document.createTextNode(i * this.board.size + j);
-                /*btn.appendChild(
-                    document.createTextNode(this.displayField(i, j))
-                );*/
                 p.appendChild(btn);
             }
             p.append(document.createElement("br"));
         }
-        //document.getElementById("content").append(p);
-
-        //document.getElementById("content").innerHTML = str;
     }
 
     printInfo() {

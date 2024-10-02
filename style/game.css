@@ -1,4 +1,4 @@
-button.field {
+input[type=button] {
     width: 5%;
     min-width: 50px;
     aspect-ratio: 1;

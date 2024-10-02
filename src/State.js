@@ -13,10 +13,8 @@
 
 */
 
-
 export default Object.freeze({
     UNSELECTED: 0,
     FLAGGED: 1,
-    REVEALED: 2
+    REVEALED: 2,
 });
-
