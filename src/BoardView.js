@@ -3,8 +3,8 @@ import State from "./State.js";
 
 export default class BoardView {
     board;
-    constructor() {
-        this.board = new Minesweeper(7);
+    constructor(board) {
+        this.board = board;
     }
 
     // For debug purpouses
@@ -30,7 +30,10 @@ export default class BoardView {
             for (let j = 0; j < this.board.size; j++) {
                 let btn = document.createElement("input");
                 btn.type = "button";
-                btn.classList += "field unrevealed";
+                btn.classList += "field";
+                if (this.board.fields[i][j].state === State.UNSELECTED) {
+                    btn.classList += " unrevealed";
+                }
                 btn.id = i * this.board.size + j;
                 p.appendChild(btn);
             }
@@ -70,6 +73,7 @@ export default class BoardView {
         document.getElementById(
             "remain-fields"
         ).innerHTML = `Remain mines: ${this.board.mineCount}`;
+        alert("ok");
     }
 
     unrevealArea(event, row, column) {
