@@ -10,12 +10,14 @@ import Field from "./Field.js";
 
 const parseGames = () => {
     let games = JSON.parse(localStorage.getItem("savedGames"));
-    if (!games) {
-        games = [];
-    }
 
-    return games;
+    return !games ? [] : games;
 };
+
+const refreshCachedGames = (games) =>
+    localStorage.setItem("savedGames", JSON.stringify(games));
+
+export const deleteSaves = () => localStorage.removeItem("savedGames");
 
 export function saveGame(saveName, game) {
     let games = parseGames();
@@ -24,11 +26,11 @@ export function saveGame(saveName, game) {
         board: game,
     });
 
-    localStorage.setItem("savedGames", JSON.stringify(games));
-    console.log(games);
+    refreshCachedGames(games);
 }
 
 export function loadGame() {
+    // Should split this function
     const searchParams = new URLSearchParams(window.location.search);
     let id = searchParams.get("id");
 
@@ -38,21 +40,32 @@ export function loadGame() {
         return new Minesweeper(7);
     }
 
-    if (id < games.length || id > games.length) {
-        document.querySelector("body").innerHTML = "Error during loading";
+    if (isNaN(id) || id < 1 || id > games.length) {
+        window.location.href = "play.html";
     }
 
-    console.log(games);
-    console.log(games[id].board.size);
+    id--;
+
     let gameData = games[id].board;
 
     let game = new Minesweeper(gameData.size);
-    Object.assign(game, gameData); // Copy properties from gameData to the new instance
+    Object.assign(game, gameData);
 
-    // Rebuild any necessary methods, if needed (e.g., fields matrix)
     game.fields = gameData.fields.map((row) =>
         row.map((fieldData) => Object.assign(new Field(), fieldData))
     );
 
     return game;
+}
+
+export function deleteSave(id) {
+    let games = parseGames();
+    games.splice(id, 1);
+    console.log(games);
+
+    if (games.length === 0) {
+        deleteSaves();
+    } else {
+        refreshCachedGames(games);
+    }
 }

@@ -5,8 +5,13 @@ import { saveGame, loadGame } from "./SaveGame.js";
 
 const game = loadGame();
 const bw = new BoardView(game);
-console.log(bw);
-bw.drawTable();
+
+if (!game) {
+    document.querySelector("#content").innerHTML = "Error during loading";
+} else {
+    console.log(game);
+    bw.drawTable();
+}
 
 document.getElementById("content").addEventListener("click", (event) => {
     const isButton =

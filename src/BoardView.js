@@ -3,6 +3,7 @@ import State from "./State.js";
 
 export default class BoardView {
     board;
+
     constructor(board) {
         this.board = board;
     }
@@ -31,10 +32,16 @@ export default class BoardView {
                 let btn = document.createElement("input");
                 btn.type = "button";
                 btn.classList += "field";
+                btn.id = i * this.board.size + j;
+                // Should be changed after implementing flags
                 if (this.board.fields[i][j].state === State.UNSELECTED) {
                     btn.classList += " unrevealed";
+                } else {
+                    let neighborMinesCount =
+                        this.board.fields[i][j].neighborMineCount;
+                    btn.value =
+                        neighborMinesCount == 0 ? "" : neighborMinesCount;
                 }
-                btn.id = i * this.board.size + j;
                 p.appendChild(btn);
             }
             p.append(document.createElement("br"));
@@ -73,7 +80,6 @@ export default class BoardView {
         document.getElementById(
             "remain-fields"
         ).innerHTML = `Remain mines: ${this.board.mineCount}`;
-        alert("ok");
     }
 
     unrevealArea(event, row, column) {
