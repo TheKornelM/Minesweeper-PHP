@@ -3,8 +3,9 @@ import State from "./State.js";
 
 export default class BoardView {
     board;
-    constructor() {
-        this.board = new Minesweeper(7);
+
+    constructor(board) {
+        this.board = board;
     }
 
     // For debug purpouses
@@ -30,8 +31,17 @@ export default class BoardView {
             for (let j = 0; j < this.board.size; j++) {
                 let btn = document.createElement("input");
                 btn.type = "button";
-                btn.classList += "field unrevealed";
+                btn.classList += "field";
                 btn.id = i * this.board.size + j;
+                // Should be changed after implementing flags
+                if (this.board.fields[i][j].state === State.UNSELECTED) {
+                    btn.classList += " unrevealed";
+                } else {
+                    let neighborMinesCount =
+                        this.board.fields[i][j].neighborMineCount;
+                    btn.value =
+                        neighborMinesCount == 0 ? "" : neighborMinesCount;
+                }
                 p.appendChild(btn);
             }
             p.append(document.createElement("br"));
