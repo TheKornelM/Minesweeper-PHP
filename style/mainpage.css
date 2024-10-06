@@ -1,5 +1,19 @@
-.save {
+[data-theme="dark"]{
+    --primary-color: #0579cc;
+    --primary-border-color: #015da0;
+    --secondary-color: white;
+    --font-color: #e1e1ff;
+    --bg-color: #161616;
+}
+
+.save{
     padding: 10px;
+    margin: 10px;
+    border-radius: 10px;
+}
+
+.save input[type="button"]{
+    float: right;
 }
 
 main {
