@@ -11,10 +11,9 @@ Should calculate height vh in JS
 */
 
 #container {
-    padding: 0 0 10px 0;
+    padding-bottom: 10px;
     display: flex;
     align-items: center;
-    height: 80vh;
     width: 100%;
     box-sizing: border-box;
 }
@@ -38,10 +37,22 @@ Should calculate height vh in JS
 }
 
 /* Responsive adjustments for smaller screens */
-@media (max-width: 768px) {
+@media (min-width: 1024px){
+    #container {
+        height: 80vh;
+    }
+}
+
+@media (max-width: 767px) {
+    #container {
+        height: 65vh; /* Reduce container height further for small screens */
+    }
+
     #content {
         grid-template-columns: repeat(4, 1fr);
         grid-template-rows: repeat(auto-fill, minmax(1fr));
+        max-width: 65vh; /* Adjust the width accordingly */
+        max-height: 65vh; /* Adjust the height accordingly */
     }
 
     #content input[type=button] {
