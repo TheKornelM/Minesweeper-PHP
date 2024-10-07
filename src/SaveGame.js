@@ -37,7 +37,7 @@ export function loadGame() {
     let games = parseGames();
 
     if (!id) {
-        return new Minesweeper(7);
+        return new Minesweeper(10);
     }
 
     if (isNaN(id) || id < 1 || id > games.length) {
