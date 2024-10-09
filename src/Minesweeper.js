@@ -24,6 +24,7 @@ import Difficulty from "./Difficulty.js";
 */
 
 export const MIN_SIZE = 4;
+export const MAX_SIZE = 23;
 
 export default class Minesweeper {
     size;

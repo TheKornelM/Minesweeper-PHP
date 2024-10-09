@@ -1,6 +1,6 @@
 "use strict";
 
-import { default as Minesweeper, MIN_SIZE } from "./Minesweeper.js";
+import { default as Minesweeper, MIN_SIZE, MAX_SIZE } from "./Minesweeper.js";
 import Field from "./Field.js";
 import Difficulty from "./Difficulty.js";
 
@@ -70,6 +70,7 @@ export function newGame() {
         size &&
         !isNaN(size) &&
         size >= MIN_SIZE &&
+        size <= MAX_SIZE &&
         searchParams.get("difficulty");
 
     const result =
