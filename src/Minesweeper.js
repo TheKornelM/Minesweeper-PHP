@@ -2,6 +2,7 @@
 
 import State from "./State.js";
 import Field from "./Field.js";
+import Difficulty from "./Difficulty.js";
 
 /*
   Minesweeper osztály: Tárolja a játékhoz szükséges adatokat
@@ -30,12 +31,12 @@ export default class Minesweeper {
     hasRevealedMine;
     fields;
 
-    constructor(s) {
+    constructor(s, difficulty) {
         this.size = s;
         let tableSize = this.size * this.size;
         this.mineCount = 0;
         this.hasRevealedMine = false;
-        this.mineCount = Math.floor(tableSize * 0.16);
+        this.mineCount = Math.floor(tableSize * difficulty);
         this.remainFields = tableSize;
         this.flaggedFields = 0;
         this.#allocateFields();

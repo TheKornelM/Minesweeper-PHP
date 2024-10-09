@@ -2,6 +2,7 @@
 
 import Minesweeper from "./Minesweeper.js";
 import Field from "./Field.js";
+import Difficulty from "./Difficulty.js";
 
 /**
  *
@@ -55,7 +56,13 @@ export function loadGame() {
     let games = parseGames();
 
     if (!id) {
-        return new Minesweeper(10);
+        const result =
+            {
+                1: Difficulty.EASY,
+                2: Difficulty.MEDIUM,
+                3: Difficulty.HARD,
+            }[searchParams.get("difficulty")] ?? "Default";
+        return new Minesweeper(searchParams.get("size"), result);
     }
 
     if (isNaN(id) || id < 1 || id > games.length) {
