@@ -17,7 +17,25 @@ const parseGames = () => {
 const refreshCachedGames = (games) =>
     localStorage.setItem("savedGames", JSON.stringify(games));
 
+const date = () =>
+    new Date()
+        .toLocaleDateString("hu-HU", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+        })
+        .split("/")
+        .reverse()
+        .join("-");
+
+const time = () =>
+    new Date().toLocaleTimeString("hu-HU", {
+        hour: "2-digit",
+        minute: "2-digit",
+    });
+
 export const deleteSaves = () => localStorage.removeItem("savedGames");
+export const getSaveName = () => `${date()} ${time()}`;
 
 export function saveGame(saveName, game) {
     let games = parseGames();

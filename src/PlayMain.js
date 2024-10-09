@@ -1,7 +1,7 @@
 "use strict";
 
 import BoardView from "./BoardView.js";
-import { saveGame, loadGame } from "./SaveGame.js";
+import { saveGame, loadGame, getSaveName } from "./SaveGame.js";
 
 const game = loadGame();
 const bw = new BoardView(game);
@@ -30,21 +30,6 @@ document.getElementById("content").addEventListener("click", (event) => {
     bw.unrevealArea(event, row, column);
 });
 
-document.getElementById("save-game").addEventListener("click", (event) => {
-    const date = new Date()
-        .toLocaleDateString("hu-HU", {
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit",
-        })
-        .split("/")
-        .reverse()
-        .join("-");
-
-    const time = new Date().toLocaleTimeString("hu-HU", {
-        hour: "2-digit",
-        minute: "2-digit",
-    });
-
-    saveGame(date + " " + time, bw.board);
-});
+document
+    .getElementById("save-game")
+    .addEventListener("click", (event) => saveGame(getSaveName(), bw.board));
