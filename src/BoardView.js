@@ -12,7 +12,7 @@ export default class BoardView {
     drawTableString() {
         document.getElementById(
             "remain-fields"
-        ).innerHTML = `Remain fields: ${this.board.remainFields}`;
+        ).innerHTML = `Remaining fields: ${this.board.remainFields}`;
         document.getElementById("content").innerHTML = "";
         let str = "";
         for (let i = 0; i < this.board.size; i++) {

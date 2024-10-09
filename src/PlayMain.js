@@ -43,3 +43,10 @@ document.getElementById("save-quit").addEventListener("click", (event) => {
 document
     .getElementById("new-game")
     .addEventListener("click", (event) => (window.location.href = "new.html"));
+
+document
+    .getElementById("quit")
+    .addEventListener(
+        "click",
+        (event) => (window.location.href = "index.html")
+    );

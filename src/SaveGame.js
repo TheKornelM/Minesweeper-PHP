@@ -13,11 +13,6 @@ const parseGames = () => {
 const searchParams = new URLSearchParams(window.location.search);
 let games = parseGames();
 
-/**
- *
- * @param {Minesweeper} game
- */
-
 const refreshCachedGames = (games) =>
     localStorage.setItem("savedGames", JSON.stringify(games));
 

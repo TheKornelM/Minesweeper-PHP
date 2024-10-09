@@ -36,6 +36,7 @@ function printSaves() {
         link.append(element.name);
 
         saveNameDiv.append(link);
+        //saveNameDiv.append(`Size: ${element.board.size}`);
         save.append(saveNameDiv);
 
         // Print save delete buttons
@@ -54,6 +55,8 @@ function printSaves() {
 
         document.querySelector("#saves").append(save);
     });
+
+    document.querySelector("body").removeAttribute("hidden");
 
     document.querySelectorAll(".delete-button").forEach((elem) =>
         elem.addEventListener("click", (event) => {
