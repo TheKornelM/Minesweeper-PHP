@@ -1,17 +1,18 @@
 "use strict";
 
 import BoardView from "./BoardView.js";
-import { saveGame, loadGame, getSaveName } from "./SaveGame.js";
+import { saveGame, loadGame, newGame, getSaveName } from "./SaveGame.js";
 
-const game = loadGame();
-const bw = new BoardView(game);
+let game = loadGame() || newGame();
 
 if (!game) {
-    document.querySelector("#content").innerHTML = "Error during loading";
-} else {
-    console.log(game);
-    bw.drawTable();
+    window.location.href = "new.html";
 }
+
+const bw = new BoardView(game);
+
+bw.drawTable();
+document.querySelector("body").removeAttribute("hidden");
 
 document.getElementById("content").addEventListener("click", (event) => {
     const isButton =
@@ -38,3 +39,7 @@ document.getElementById("save-quit").addEventListener("click", (event) => {
     saveGame(getSaveName(), bw.board);
     window.location.href = "index.html";
 });
+
+document
+    .getElementById("new-game")
+    .addEventListener("click", (event) => (window.location.href = "new.html"));

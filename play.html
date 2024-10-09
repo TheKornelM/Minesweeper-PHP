@@ -17,12 +17,8 @@
         <link rel="stylesheet" href="./style/game.css" />
     </head>
 
-    <body>
+    <body hidden>
         <main>
-            <h1 id="remain-fields"></h1>
-            <div id="container">
-                <div id="content"></div>
-            </div>
             <form>
                 <input
                     type="button"
@@ -36,7 +32,17 @@
                     class="btn btn-primary"
                     value="Save and quit"
                 />
+                <input
+                    type="button"
+                    value="New game"
+                    class="btn btn-primary"
+                    id="new-game"
+                />
             </form>
+            <h1 id="remain-fields"></h1>
+            <div id="container">
+                <div id="content"></div>
+            </div>
         </main>
     </body>
 </html>

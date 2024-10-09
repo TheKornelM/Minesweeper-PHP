@@ -23,6 +23,8 @@ import Difficulty from "./Difficulty.js";
       Mezőket tároló mátrix, dinamikus allokálású
 */
 
+export const MIN_SIZE = 4;
+
 export default class Minesweeper {
     size;
     mineCount;

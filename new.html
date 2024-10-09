@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script type="module" src="./src/NewGame.js"></script>
+        <title>New Game</title>
+    </head>
+    <body>
+        <main>
+            <form id="new-game">
+                <label for="size">Size:</label>
+                <input type="number" name="size" id="" value="5" />
+                <label for="difficulty">Difficulty:</label>
+                <select id="difficulty" name="difficulty">
+                    <option value="1">Easy</option>
+                    <option value="2">Medium</option>
+                    <option value="3">Hard</option>
+                </select>
+                <input type="submit" value="Generate field" />
+            </form>
+        </main>
+    </body>
+</html>

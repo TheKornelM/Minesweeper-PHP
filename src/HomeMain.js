@@ -18,7 +18,7 @@ function printSaves() {
     const games = JSON.parse(localStorage.getItem("savedGames"));
 
     if (!games) {
-        window.location.replace("/play.html");
+        window.location.replace("/new.html");
         return;
     }
 
