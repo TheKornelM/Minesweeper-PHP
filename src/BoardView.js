@@ -27,6 +27,8 @@ export default class BoardView {
     drawTable() {
         this.#printRemainFields();
         let p = document.getElementById("content");
+        p.style.gridTemplateColumns = `repeat(${this.board.size}, 1fr)`;
+        p.style.gridTemplateRows = `repeat(${this.board.size}, 1fr)`;
         for (let i = 0; i < this.board.size; i++) {
             for (let j = 0; j < this.board.size; j++) {
                 let btn = document.createElement("input");
@@ -44,7 +46,7 @@ export default class BoardView {
                 }
                 p.appendChild(btn);
             }
-            p.append(document.createElement("br"));
+            //p.append(document.createElement("br"));
         }
     }
 

@@ -27,7 +27,7 @@ function printSaves() {
         save.className = "row save";
 
         let saveNameDiv = document.createElement("div");
-        saveNameDiv.className = "col-md-3 col-sm-8";
+        saveNameDiv.className = "col-md-6";
 
         // Print save names
 
@@ -41,7 +41,7 @@ function printSaves() {
         // Print save delete buttons
 
         let deleteDiv = document.createElement("div");
-        deleteDiv.className = "col-md-1 col-sm-4";
+        deleteDiv.className = "col-md-6";
 
         let deleteButton = document.createElement("input");
         deleteButton.type = "button";

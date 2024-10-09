@@ -1,10 +1,64 @@
-#content input[type=button] {
+/*#content input[type=button] {
     width: 5%;
     min-width: 50px;
     aspect-ratio: 1;
     font-weight: bold;
 }
+*/
 
+/*
+Should calculate height vh in JS
+*/
+
+#container {
+    padding-bottom: 10px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#content {
+    display: grid;
+    gap: 5px;
+    width: 100%;
+    max-width: 80vh;
+    max-height: 80vh;
+    aspect-ratio: 1;
+}
+
+#content input[type=button] {
+    width: 100%;
+    height: auto;
+    font-size: calc(10px + 1vw);
+    aspect-ratio: 1 / 1;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (min-width: 1024px){
+    #container {
+        height: 80vh;
+    }
+}
+
+@media (max-width: 767px) {
+    #container {
+        height: 65vh; /* Reduce container height further for small screens */
+    }
+
+    #content {
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(auto-fill, minmax(1fr));
+        max-width: 65vh; /* Adjust the width accordingly */
+        max-height: 65vh; /* Adjust the height accordingly */
+    }
+
+    #content input[type=button] {
+        font-size: calc(8px + 1vw);
+    }
+}
 html {
     background-color: lightgray;
 }
