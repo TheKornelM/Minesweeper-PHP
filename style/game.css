@@ -59,7 +59,7 @@ Should calculate height vh in JS
         font-size: calc(8px + 1vw);
     }
 }
-html {
+html, main, body {
     background-color: lightgray;
 }
 

@@ -32,9 +32,9 @@ document.getElementById("content").addEventListener("click", (event) => {
 
 document
     .getElementById("save-game")
-    .addEventListener("click", saveGame(getSaveName(), bw.board));
+    .addEventListener("click", (event) => saveGame(getSaveName(), bw.board));
 
-document.getElementById("save-quit").addEventListener("click", () => {
+document.getElementById("save-quit").addEventListener("click", (event) => {
     saveGame(getSaveName(), bw.board);
     window.location.href = "index.html";
 });
