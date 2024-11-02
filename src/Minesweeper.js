@@ -71,6 +71,10 @@ export default class Minesweeper {
         }
     }
 
+    convertToId(row, column) {
+        return row * this.size + column;
+    }
+
     unrevealField(row, column, revealedFields = []) {
         /* Amennyiben az adott mező nem érvényes (pl. negatív szám), vagy
        korábban már felfedésre került az adott hely, akkor a rekurzió befejeződik. */
@@ -89,7 +93,7 @@ export default class Minesweeper {
         this.remainFields--;
 
         // Store row and column as an object
-        const fieldId = row * this.size + column;
+        const fieldId = this.convertToId(row, column);
         revealedFields.push({ id: fieldId, row: row, column: column });
 
         /* Ha egy hely körül van szomszédos akna, akkor azt a helyet felfedjük,

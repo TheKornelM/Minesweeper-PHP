@@ -48,6 +48,10 @@ export default class BoardView {
             }
             //p.append(document.createElement("br"));
         }
+
+        if (this.board.hasRevealedMine) {
+            this.revealMines();
+        }
     }
 
     printInfo() {
@@ -62,14 +66,14 @@ export default class BoardView {
                     this.board.hasRevealedMine &&
                     this.board.fields[row][column].hasMine
                 ) {
-                    return "M";
+                    return "💣";
                 } else {
                     return this.board.fields[row][column].neighborMineCount;
                 }
             case State.REVEALED:
                 if (this.board.fields[row][column].hasMine) {
                     // A felhasználó által felfedett aknát piros alapon jelenítjük meg.
-                    return "M";
+                    return "💣";
                 } else {
                     return this.board.fields[row][column].neighborMineCount;
                 }
@@ -98,6 +102,38 @@ export default class BoardView {
             button.classList.remove("unrevealed");
         });
 
+        if (this.board.hasRevealedMine) {
+            alert("failed");
+        }
+
         this.#printRemainFields();
+
+        if (!this.board.hasRevealedMine) {
+            return;
+        }
+
+        this.revealMines();
+    }
+
+    revealMines() {
+        this.board.fields.forEach((row, i) => {
+            row.forEach((field, j) => {
+                if (!field.hasMine) {
+                    return;
+                }
+
+                var button = document.getElementById(
+                    this.board.convertToId(i, j)
+                );
+
+                button.value = "💣";
+
+                if (field.state == State.REVEALED) {
+                    button.classList.add("revealed-bomb");
+                } else {
+                    button.classList = ["field", "revealed"];
+                }
+            });
+        });
     }
 }

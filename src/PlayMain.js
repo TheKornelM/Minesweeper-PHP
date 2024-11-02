@@ -20,7 +20,7 @@ document.getElementById("content").addEventListener("click", (event) => {
         event.target.type === "button" &&
         event.target.classList.contains("field");
 
-    if (!isButton) {
+    if (!isButton || bw.board.hasRevealedMine) {
         return;
     }
 
