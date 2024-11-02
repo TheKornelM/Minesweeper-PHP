@@ -2,6 +2,7 @@
 
 import State from "./State.js";
 import Field from "./Field.js";
+import Difficulty from "./Difficulty.js";
 
 /*
   Minesweeper osztály: Tárolja a játékhoz szükséges adatokat
@@ -22,6 +23,9 @@ import Field from "./Field.js";
       Mezőket tároló mátrix, dinamikus allokálású
 */
 
+export const MIN_SIZE = 4;
+export const MAX_SIZE = 15;
+
 export default class Minesweeper {
     size;
     mineCount;
@@ -30,12 +34,12 @@ export default class Minesweeper {
     hasRevealedMine;
     fields;
 
-    constructor(s) {
+    constructor(s, difficulty) {
         this.size = s;
         let tableSize = this.size * this.size;
         this.mineCount = 0;
         this.hasRevealedMine = false;
-        this.mineCount = Math.floor(tableSize * 0.16);
+        this.mineCount = Math.floor(tableSize * difficulty);
         this.remainFields = tableSize;
         this.flaggedFields = 0;
         this.#allocateFields();
@@ -67,6 +71,10 @@ export default class Minesweeper {
         }
     }
 
+    convertToId(row, column) {
+        return row * this.size + column;
+    }
+
     unrevealField(row, column, revealedFields = []) {
         /* Amennyiben az adott mező nem érvényes (pl. negatív szám), vagy
        korábban már felfedésre került az adott hely, akkor a rekurzió befejeződik. */
@@ -85,7 +93,7 @@ export default class Minesweeper {
         this.remainFields--;
 
         // Store row and column as an object
-        const fieldId = row * this.size + column;
+        const fieldId = this.convertToId(row, column);
         revealedFields.push({ id: fieldId, row: row, column: column });
 
         /* Ha egy hely körül van szomszédos akna, akkor azt a helyet felfedjük,

@@ -1,0 +1,14 @@
+main {
+    padding: 30px;
+}
+
+input[type="submit"] {
+    min-width: 15vw;
+    height: 40%;
+}
+
+.grid-container {
+    display: inline-grid;
+    row-gap: 2vh;
+    grid-template-rows: repeat(2, 5vh) 20vh;
+}

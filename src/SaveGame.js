@@ -1,12 +1,8 @@
 "use strict";
 
-import Minesweeper from "./Minesweeper.js";
+import { default as Minesweeper, MIN_SIZE, MAX_SIZE } from "./Minesweeper.js";
 import Field from "./Field.js";
-
-/**
- *
- * @param {Minesweeper} game
- */
+import Difficulty from "./Difficulty.js";
 
 const parseGames = () => {
     let games = JSON.parse(localStorage.getItem("savedGames"));
@@ -14,13 +10,33 @@ const parseGames = () => {
     return !games ? [] : games;
 };
 
+const searchParams = new URLSearchParams(window.location.search);
+let games = parseGames();
+
 const refreshCachedGames = (games) =>
     localStorage.setItem("savedGames", JSON.stringify(games));
 
+const date = () =>
+    new Date()
+        .toLocaleDateString("hu-HU", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+        })
+        .split("/")
+        .reverse()
+        .join("-");
+
+const time = () =>
+    new Date().toLocaleTimeString("hu-HU", {
+        hour: "2-digit",
+        minute: "2-digit",
+    });
+
 export const deleteSaves = () => localStorage.removeItem("savedGames");
+export const getSaveName = () => `${date()} ${time()}`;
 
 export function saveGame(saveName, game) {
-    let games = parseGames();
     games.push({
         name: saveName,
         board: game,
@@ -30,24 +46,13 @@ export function saveGame(saveName, game) {
 }
 
 export function loadGame() {
-    // Should split this function
-    const searchParams = new URLSearchParams(window.location.search);
     let id = searchParams.get("id");
-
-    let games = parseGames();
-
-    if (!id) {
-        return new Minesweeper(7);
-    }
-
-    if (isNaN(id) || id < 1 || id > games.length) {
-        window.location.href = "play.html";
+    if (!id || isNaN(id) || id < 1 || id > games.length) {
+        return null;
     }
 
     id--;
-
     let gameData = games[id].board;
-
     let game = new Minesweeper(gameData.size);
     Object.assign(game, gameData);
 
@@ -56,6 +61,30 @@ export function loadGame() {
     );
 
     return game;
+}
+
+export function newGame() {
+    const size = searchParams.get("size");
+
+    const isCorrectQuery =
+        size &&
+        !isNaN(size) &&
+        size >= MIN_SIZE &&
+        size <= MAX_SIZE &&
+        searchParams.get("difficulty");
+
+    const result =
+        {
+            1: Difficulty.EASY,
+            2: Difficulty.MEDIUM,
+            3: Difficulty.HARD,
+        }[searchParams.get("difficulty")] ?? null;
+
+    if (!(isCorrectQuery && result)) {
+        return null;
+    }
+
+    return new Minesweeper(searchParams.get("size"), result);
 }
 
 export function deleteSave(id) {

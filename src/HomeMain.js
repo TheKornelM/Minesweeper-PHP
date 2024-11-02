@@ -18,7 +18,7 @@ function printSaves() {
     const games = JSON.parse(localStorage.getItem("savedGames"));
 
     if (!games) {
-        window.location.replace("/play.html");
+        window.location.replace("/new.html");
         return;
     }
 
@@ -27,7 +27,7 @@ function printSaves() {
         save.className = "row save";
 
         let saveNameDiv = document.createElement("div");
-        saveNameDiv.className = "col-md-3 col-sm-8";
+        saveNameDiv.className = "col-md-6";
 
         // Print save names
 
@@ -36,12 +36,13 @@ function printSaves() {
         link.append(element.name);
 
         saveNameDiv.append(link);
+        //saveNameDiv.append(`Size: ${element.board.size}`);
         save.append(saveNameDiv);
 
         // Print save delete buttons
 
         let deleteDiv = document.createElement("div");
-        deleteDiv.className = "col-md-1 col-sm-4";
+        deleteDiv.className = "col-md-6";
 
         let deleteButton = document.createElement("input");
         deleteButton.type = "button";
@@ -54,6 +55,8 @@ function printSaves() {
 
         document.querySelector("#saves").append(save);
     });
+
+    document.querySelector("body").removeAttribute("hidden");
 
     document.querySelectorAll(".delete-button").forEach((elem) =>
         elem.addEventListener("click", (event) => {

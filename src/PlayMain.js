@@ -1,17 +1,18 @@
 "use strict";
 
 import BoardView from "./BoardView.js";
-import { saveGame, loadGame } from "./SaveGame.js";
+import { saveGame, loadGame, newGame, getSaveName } from "./SaveGame.js";
 
-const game = loadGame();
-const bw = new BoardView(game);
+let game = loadGame() || newGame();
 
 if (!game) {
-    document.querySelector("#content").innerHTML = "Error during loading";
-} else {
-    console.log(game);
-    bw.drawTable();
+    window.location.href = "new.html";
 }
+
+const bw = new BoardView(game);
+
+bw.drawTable();
+document.querySelector("body").removeAttribute("hidden");
 
 document.getElementById("content").addEventListener("click", (event) => {
     const isButton =
@@ -19,7 +20,7 @@ document.getElementById("content").addEventListener("click", (event) => {
         event.target.type === "button" &&
         event.target.classList.contains("field");
 
-    if (!isButton) {
+    if (!isButton || bw.board.hasRevealedMine) {
         return;
     }
 
@@ -30,21 +31,22 @@ document.getElementById("content").addEventListener("click", (event) => {
     bw.unrevealArea(event, row, column);
 });
 
-document.getElementById("save-game").addEventListener("click", (event) => {
-    const date = new Date()
-        .toLocaleDateString("hu-HU", {
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit",
-        })
-        .split("/")
-        .reverse()
-        .join("-");
+document
+    .getElementById("save-game")
+    .addEventListener("click", (event) => saveGame(getSaveName(), bw.board));
 
-    const time = new Date().toLocaleTimeString("hu-HU", {
-        hour: "2-digit",
-        minute: "2-digit",
-    });
-
-    saveGame(date + " " + time, bw.board);
+document.getElementById("save-quit").addEventListener("click", (event) => {
+    saveGame(getSaveName(), bw.board);
+    window.location.href = "index.html";
 });
+
+document
+    .getElementById("new-game")
+    .addEventListener("click", (event) => (window.location.href = "new.html"));
+
+document
+    .getElementById("quit")
+    .addEventListener(
+        "click",
+        (event) => (window.location.href = "index.html")
+    );
