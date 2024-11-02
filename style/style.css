@@ -2,7 +2,7 @@ main {
     padding: 30px;
 }
 
-input[type="submit"]{
+input[type="submit"] {
     min-width: 15vw;
     height: 40%;
 }
@@ -10,5 +10,5 @@ input[type="submit"]{
 .grid-container {
     display: inline-grid;
     row-gap: 2vh;
-    grid-template-rows: repeat(2, 5vh) 20vh;   
+    grid-template-rows: repeat(2, 5vh) 20vh;
 }

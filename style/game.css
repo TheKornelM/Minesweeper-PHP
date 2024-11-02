@@ -21,13 +21,12 @@ Should calculate height vh in JS
 #content {
     display: grid;
     gap: 5px;
-    width: 100%;
-    max-width: 80vh;
+    max-width: 100%;
     max-height: 80vh;
     aspect-ratio: 1;
 }
 
-#content input[type=button] {
+#content input[type="button"] {
     text-align: center;
     width: 100%;
     min-width: 45px;
@@ -39,56 +38,64 @@ Should calculate height vh in JS
 }
 
 /* Responsive adjustments for smaller screens */
-@media (min-width: 1024px){
-    #container {
-        height: 80vh;
-    }
+@media (min-width: 1024px) {
 }
 
-@media (max-width: 767px) {
-    #container {
-        height: 65vh; /* Reduce container height further for small screens */
-    }
-
+@media (max-width: 1023px) and (min-height: 768px) {
     #content {
         grid-template-columns: repeat(4, 1fr);
         grid-template-rows: repeat(auto-fill, minmax(1fr));
-        max-width: 65vh; /* Adjust the width accordingly */
-        max-height: 65vh; /* Adjust the height accordingly */
+        width: 80vh; /* Adjust the width accordingly */
     }
 
-    #content input[type=button] {
-        font-size: calc(8px + 1vw);
+    #content input[type="button"] {
+        font-size: clamp(30px, 1vw, 50px);
+    }
+
+    input[type="button"] {
+        height: 5vh;
+        font-size: 3vh;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-size: 500%;
     }
 }
-html, main, body {
+html,
+main,
+body {
     background-color: lightgray;
 }
 
-.unrevealed{
+.unrevealed {
     background-color: gray;
 }
 
-#content input[type=button][value="1"]{
+#content input[type="button"][value="1"] {
     color: blue;
 }
 
-#content input[type=button][value="2"]{
+#content input[type="button"][value="2"] {
     color: red;
 }
 
-#content input[type=button][value="3"]{
+#content input[type="button"][value="3"] {
     color: green;
 }
 
-#content input[type=button][value="4"]{
+#content input[type="button"][value="4"] {
     color: darkblue;
 }
 
-#content input[type=button][value="5"]{
+#content input[type="button"][value="5"] {
     color: darkred;
 }
 
-#content input[type=button][value="6"]{
+#content input[type="button"][value="6"] {
     color: cyan;
 }
