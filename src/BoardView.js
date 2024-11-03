@@ -59,7 +59,7 @@ export default class BoardView {
             mineCount: ${this.board.mineCount}\n`);
     }
 
-    #displayField(row, column) {
+    #getFieldText(row, column) {
         switch (this.board.fields[row][column].state) {
             case State.UNSELECTED:
                 if (
@@ -88,31 +88,25 @@ export default class BoardView {
         ).innerHTML = `Remain mines: ${this.board.mineCount}`;
     }
 
-    unrevealArea(event, row, column) {
-        this.board.selectField(row, column);
-        let unrevealedFields = this.board.unrevealField(row, column);
-
-        let neighborMinesCount = this.#displayField(row, column);
-        event.target.value = neighborMinesCount == 0 ? "" : neighborMinesCount;
-
-        unrevealedFields.forEach((item) => {
-            neighborMinesCount = this.#displayField(item.row, item.column);
+    #unrevealFields(fields) {
+        fields.forEach((item) => {
+            let neighborMinesCount = this.#getFieldText(item.row, item.column);
             const button = document.getElementById(`${item.id}`);
             button.value = neighborMinesCount == 0 ? "" : neighborMinesCount;
             button.classList.remove("unrevealed");
         });
+    }
 
-        if (this.board.hasRevealedMine) {
-            alert("failed");
-        }
+    unrevealArea(row, column) {
+        this.board.selectField(row, column);
+        let unrevealedFields = this.board.unrevealField(row, column);
 
+        this.#unrevealFields(unrevealedFields);
         this.#printRemainFields();
 
-        if (!this.board.hasRevealedMine) {
-            return;
+        if (this.board.hasRevealedMine) {
+            this.revealMines();
         }
-
-        this.revealMines();
     }
 
     revealMines() {

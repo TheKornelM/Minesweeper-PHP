@@ -39,7 +39,7 @@ document.getElementById("content").addEventListener("mousedown", (event) => {
                 (event.target.id - (event.target.id % bw.board.size)) /
                 bw.board.size;
             let column = event.target.id - row * bw.board.size;
-            bw.unrevealArea(event, row, column); // Perform the short click action
+            bw.unrevealArea(row, column); // Perform the short click action
         }
         cleanup();
     };
