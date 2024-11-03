@@ -59,6 +59,17 @@ export default class BoardView {
             mineCount: ${this.board.mineCount}\n`);
     }
 
+    calculateRowColumnById(event) {
+        const row =
+            (event.target.id - (event.target.id % this.board.size)) /
+            this.board.size;
+
+        return {
+            row: row,
+            column: event.target.id - row * this.board.size,
+        };
+    }
+
     #getFieldText(row, column) {
         switch (this.board.fields[row][column].state) {
             case State.UNSELECTED:
@@ -104,6 +115,7 @@ export default class BoardView {
         this.#unrevealFields(unrevealedFields);
         this.#printRemainFields();
 
+        // Move to PlayMain
         if (this.board.hasRevealedMine) {
             this.revealMines();
         }

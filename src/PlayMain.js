@@ -26,20 +26,17 @@ document.getElementById("content").addEventListener("mousedown", (event) => {
 
     let holdTimer;
 
-    // Set a timer to detect if the button is held down for 500ms
+    // If the button is held down for 500ms, we change the flag on the field
     holdTimer = setTimeout(() => {
-        holdTimer = null; // Clear the timer to mark as hold click
+        holdTimer = null;
     }, 500); // 500ms threshold for detecting a hold
 
-    // If mouseup occurs before 500ms, treat it as a short click
+    // If mouseup occurs before 500ms, unreveal field
     const handleMouseUp = () => {
         if (holdTimer) {
-            clearTimeout(holdTimer); // Clear the hold timer
-            let row =
-                (event.target.id - (event.target.id % bw.board.size)) /
-                bw.board.size;
-            let column = event.target.id - row * bw.board.size;
-            bw.unrevealArea(row, column); // Perform the short click action
+            clearTimeout(holdTimer);
+            let fieldPositions = bw.calculateRowColumnById(event);
+            bw.unrevealArea(fieldPositions.row, fieldPositions.column);
         }
         cleanup();
     };
