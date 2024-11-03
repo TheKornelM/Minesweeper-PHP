@@ -2,6 +2,7 @@
 
 import BoardView from "./BoardView.js";
 import { saveGame, loadGame, newGame, getSaveName } from "./SaveGame.js";
+import State from "./State.js";
 
 let game = loadGame() || newGame();
 
@@ -26,8 +27,20 @@ document.getElementById("content").addEventListener("mousedown", (event) => {
 
     let holdTimer;
 
+    let fieldPositions = bw.calculateRowColumnById(event);
+    fieldPositions.id = event.target.id;
+
     // If the button is held down for 500ms, we change the flag on the field
     holdTimer = setTimeout(() => {
+        bw.board.changeFlag(fieldPositions.row, fieldPositions.column);
+        let fieldState =
+            bw.board.fields[fieldPositions.row][fieldPositions.column].state;
+
+        if (fieldState === State.FLAGGED) {
+            bw.updateField(fieldPositions);
+        } else if (fieldState === State.UNSELECTED) {
+            event.target.value = "";
+        }
         holdTimer = null;
     }, 500); // 500ms threshold for detecting a hold
 
@@ -35,7 +48,6 @@ document.getElementById("content").addEventListener("mousedown", (event) => {
     const handleMouseUp = () => {
         if (holdTimer) {
             clearTimeout(holdTimer);
-            let fieldPositions = bw.calculateRowColumnById(event);
             bw.unrevealArea(fieldPositions.row, fieldPositions.column);
         }
         cleanup();

@@ -22,4 +22,4 @@ export default class Field {
         this.neighborMineCount = 0;
         this.state = State.UNSELECTED;
     }
-};
+}
