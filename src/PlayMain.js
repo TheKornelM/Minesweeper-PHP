@@ -2,6 +2,7 @@
 
 import BoardView from "./BoardView.js";
 import { saveGame, loadGame, newGame, getSaveName } from "./SaveGame.js";
+import State from "./State.js";
 
 let game = loadGame() || newGame();
 
@@ -14,7 +15,7 @@ const bw = new BoardView(game);
 bw.drawTable();
 document.querySelector("body").removeAttribute("hidden");
 
-document.getElementById("content").addEventListener("click", (event) => {
+document.getElementById("content").addEventListener("mousedown", (event) => {
     const isButton =
         event.target.nodeName === "INPUT" &&
         event.target.type === "button" &&
@@ -24,11 +25,42 @@ document.getElementById("content").addEventListener("click", (event) => {
         return;
     }
 
-    let row =
-        (event.target.id - (event.target.id % bw.board.size)) / bw.board.size;
-    let column = event.target.id - row * bw.board.size;
+    let holdTimer;
 
-    bw.unrevealArea(event, row, column);
+    let fieldPositions = bw.calculateRowColumnById(event);
+    fieldPositions.id = event.target.id;
+
+    // If the button is held down for 500ms, we change the flag on the field
+    holdTimer = setTimeout(() => {
+        bw.board.changeFlag(fieldPositions.row, fieldPositions.column);
+        let fieldState =
+            bw.board.fields[fieldPositions.row][fieldPositions.column].state;
+
+        if (fieldState === State.FLAGGED) {
+            bw.updateField(fieldPositions);
+        } else if (fieldState === State.UNSELECTED) {
+            event.target.value = "";
+        }
+        holdTimer = null;
+    }, 500); // 500ms threshold for detecting a hold
+
+    // If mouseup occurs before 500ms, unreveal field
+    const handleMouseUp = () => {
+        if (holdTimer) {
+            clearTimeout(holdTimer);
+            bw.unrevealArea(fieldPositions.row, fieldPositions.column);
+        }
+        cleanup();
+    };
+
+    const cleanup = () => {
+        document.removeEventListener("mouseup", handleMouseUp);
+        document.removeEventListener("mouseleave", handleMouseUp);
+    };
+
+    // Attach event listeners to detect when mouse is released or leaves the button area
+    document.addEventListener("mouseup", handleMouseUp);
+    document.addEventListener("mouseleave", handleMouseUp);
 });
 
 document

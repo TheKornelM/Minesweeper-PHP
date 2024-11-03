@@ -2,6 +2,6 @@
 
 export default Object.freeze({
     EASY: 0.16,
-    MEDIUM: 0.36,
-    HARD: 0.56,
+    MEDIUM: 0.26,
+    HARD: 0.46,
 });

@@ -1,3 +1,5 @@
+"use strict";
+
 import Minesweeper from "./Minesweeper.js";
 import State from "./State.js";
 
@@ -6,22 +8,6 @@ export default class BoardView {
 
     constructor(board) {
         this.board = board;
-    }
-
-    // For debug purpouses
-    drawTableString() {
-        document.getElementById(
-            "remain-fields"
-        ).innerHTML = `Remaining fields: ${this.board.remainFields}`;
-        document.getElementById("content").innerHTML = "";
-        let str = "";
-        for (let i = 0; i < this.board.size; i++) {
-            for (let j = 0; j < this.board.size; j++) {
-                str += this.displayField(i, j) + "\t";
-            }
-            str += "<br>";
-        }
-        document.getElementById("content").innerHTML = str;
     }
 
     drawTable() {
@@ -35,18 +21,19 @@ export default class BoardView {
                 btn.type = "button";
                 btn.classList += "field";
                 btn.id = i * this.board.size + j;
-                // Should be changed after implementing flags
-                if (this.board.fields[i][j].state === State.UNSELECTED) {
+                btn.value = this.#getFieldText(i, j);
+
+                let fieldState = this.board.fields[i][j].state;
+
+                if (
+                    fieldState === State.UNSELECTED ||
+                    fieldState === State.FLAGGED
+                ) {
                     btn.classList += " unrevealed";
-                } else {
-                    let neighborMinesCount =
-                        this.board.fields[i][j].neighborMineCount;
-                    btn.value =
-                        neighborMinesCount == 0 ? "" : neighborMinesCount;
                 }
+
                 p.appendChild(btn);
             }
-            //p.append(document.createElement("br"));
         }
 
         if (this.board.hasRevealedMine) {
@@ -54,12 +41,18 @@ export default class BoardView {
         }
     }
 
-    printInfo() {
-        console.log(`Remain fields: ${this.board.remainFields}\n
-            mineCount: ${this.board.mineCount}\n`);
+    calculateRowColumnById(event) {
+        const row =
+            (event.target.id - (event.target.id % this.board.size)) /
+            this.board.size;
+
+        return {
+            row: row,
+            column: event.target.id - row * this.board.size,
+        };
     }
 
-    #displayField(row, column) {
+    #getFieldText(row, column) {
         switch (this.board.fields[row][column].state) {
             case State.UNSELECTED:
                 if (
@@ -67,18 +60,18 @@ export default class BoardView {
                     this.board.fields[row][column].hasMine
                 ) {
                     return "💣";
-                } else {
-                    return this.board.fields[row][column].neighborMineCount;
                 }
+
+                return "";
             case State.REVEALED:
                 if (this.board.fields[row][column].hasMine) {
-                    // A felhasználó által felfedett aknát piros alapon jelenítjük meg.
                     return "💣";
-                } else {
-                    return this.board.fields[row][column].neighborMineCount;
                 }
+
+                let mines = this.board.fields[row][column].neighborMineCount;
+                return mines === 0 ? "" : mines;
             case State.FLAGGED:
-                return "F";
+                return "🚩";
         }
     }
 
@@ -88,31 +81,37 @@ export default class BoardView {
         ).innerHTML = `Remain mines: ${this.board.mineCount}`;
     }
 
-    unrevealArea(event, row, column) {
-        this.board.selectField(row, column);
-        let unrevealedFields = this.board.unrevealField(row, column);
-
-        let neighborMinesCount = this.#displayField(row, column);
-        event.target.value = neighborMinesCount == 0 ? "" : neighborMinesCount;
-
-        unrevealedFields.forEach((item) => {
-            neighborMinesCount = this.#displayField(item.row, item.column);
-            const button = document.getElementById(`${item.id}`);
-            button.value = neighborMinesCount == 0 ? "" : neighborMinesCount;
-            button.classList.remove("unrevealed");
+    #unrevealFields(fields) {
+        fields.forEach((item) => {
+            this.updateField(item);
         });
+    }
 
-        if (this.board.hasRevealedMine) {
-            alert("failed");
-        }
+    updateField(field) {
+        let neighborMinesCount = this.#getFieldText(field.row, field.column);
+        const button = document.getElementById(`${field.id}`);
+        button.value = neighborMinesCount === 0 ? "" : neighborMinesCount;
 
-        this.#printRemainFields();
-
-        if (!this.board.hasRevealedMine) {
+        if (
+            this.board.fields[field.row][field.column].state === State.FLAGGED
+        ) {
             return;
         }
 
-        this.revealMines();
+        button.classList.remove("unrevealed");
+    }
+
+    unrevealArea(row, column) {
+        this.board.selectField(row, column);
+        let unrevealedFields = this.board.unrevealField(row, column);
+
+        this.#unrevealFields(unrevealedFields);
+        this.#printRemainFields();
+
+        // Move to PlayMain
+        if (this.board.hasRevealedMine) {
+            this.revealMines();
+        }
     }
 
     revealMines() {
