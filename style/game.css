@@ -85,6 +85,6 @@ body {
     color: cyan;
 }
 
-#content .revealed-bomb {
-    background-color: red;
+#content .red-bg {
+    background-color: darkred;
 }
