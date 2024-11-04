@@ -3,6 +3,7 @@
 import BoardView from "./BoardView.js";
 import { saveGame, loadGame, newGame, getSaveName } from "./SaveGame.js";
 import State from "./State.js";
+import * as Popup from "./Popup.js";
 
 let game = loadGame() || newGame();
 
@@ -21,7 +22,7 @@ document.getElementById("content").addEventListener("mousedown", (event) => {
         event.target.type === "button" &&
         event.target.classList.contains("field");
 
-    if (!isButton || bw.board.hasRevealedMine) {
+    if (!isButton || bw.board.hasRevealedMine || bw.board.isGameWon()) {
         return;
     }
 
@@ -50,7 +51,8 @@ document.getElementById("content").addEventListener("mousedown", (event) => {
             clearTimeout(holdTimer);
             bw.unrevealArea(fieldPositions.row, fieldPositions.column);
             if (bw.board.isGameWon()) {
-                alert("Won game!");
+                const content = "You won the game!";
+                Popup.showOverlay(content);
             }
         }
         cleanup();

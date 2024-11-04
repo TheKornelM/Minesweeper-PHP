@@ -12,3 +12,38 @@ input[type="submit"] {
     row-gap: 2vh;
     grid-template-rows: repeat(2, 5vh) 20vh;
 }
+
+#popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -100px;
+    margin-left: -150px;
+
+    border: 1px solid #5c5c5c;
+    height: 200px;
+    width: 300px;
+    background-color: #cfc;
+    display: none;
+}
+
+#popup h2 {
+    font-size: 1.2em;
+    color: #fff;
+    background-color: #090;
+    margin: 0;
+    padding: 10px;
+    position: relative;
+}
+
+#popup h2 > .close {
+    border: solid 1px #fff;
+    padding: 2px;
+    position: relative;
+    left: 220px;
+    cursor: pointer;
+}
+
+#popup .content {
+    padding: 10px;
+}
