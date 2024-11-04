@@ -16,52 +16,70 @@
         <script src="./src/PlayMain.js" type="module"></script>
         <link rel="stylesheet" href="./style/style.css" />
         <link rel="stylesheet" href="./style/game.css" />
+        <link rel="stylesheet" href="./style/popup.css" />
     </head>
 
     <body hidden>
         <main>
-            <form>
-                <form>
-                    <div class="row">
-                        <div class="col-lg-3 col-md-6 col-6 mb-1">
-                            <input
-                                type="button"
-                                id="quit"
-                                class="btn btn-primary w-100"
-                                value="Quit"
-                            />
-                        </div>
-                        <div class="col-lg-3 col-md-6 col-6 mb-1">
-                            <input
-                                type="button"
-                                id="save-game"
-                                class="btn btn-primary w-100"
-                                value="Save game"
-                            />
-                        </div>
-                        <div class="col-lg-3 col-md-6 col-6 mb-1">
-                            <input
-                                type="button"
-                                id="save-quit"
-                                class="btn btn-primary w-100"
-                                value="Save and quit"
-                            />
-                        </div>
-                        <div class="col-lg-3 col-md-6 col-6 mb-1">
-                            <input
-                                type="button"
-                                id="new-game"
-                                class="btn btn-primary w-100"
-                                value="New game"
-                            />
-                        </div>
+            <section id="popup" class="col-md-6 col-lg-4">
+                <h2>Info</h2>
+                <div id="popup-content">
+                    <div id="popup-message"></div>
+                    <input
+                        type="button"
+                        class="new-game btn btn-primary"
+                        value="New Game"
+                    />
+                </div>
+            </section>
+            <section id="game">
+                <section id="navigation">
+                    <form>
+                        <form>
+                            <div class="row">
+                                <div class="col-lg-3 col-md-6 col-6 mb-1">
+                                    <input
+                                        type="button"
+                                        id="quit"
+                                        class="btn btn-primary w-100"
+                                        value="Quit"
+                                    />
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-6 mb-1">
+                                    <input
+                                        type="button"
+                                        id="save-game"
+                                        class="btn btn-primary w-100"
+                                        value="Save game"
+                                    />
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-6 mb-1">
+                                    <input
+                                        type="button"
+                                        id="save-quit"
+                                        class="btn btn-primary w-100"
+                                        value="Save and quit"
+                                    />
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-6 mb-1">
+                                    <input
+                                        type="button"
+                                        id="new-game"
+                                        class="btn btn-primary w-100 new-game"
+                                        value="New game"
+                                    />
+                                </div>
+                            </div>
+                        </form>
+                    </form>
+                </section>
+                <section id="board">
+                    <h1 id="remain-fields"></h1>
+                    <div id="container">
+                        <div id="content"></div>
                     </div>
-                </form>
-            </form>
-            <h1 id="remain-fields"></h1>
-            <div id="container">
-                <div id="content"></div>
-            </div>
+                </section>
+            </section>
         </main>
     </body>
 </html>

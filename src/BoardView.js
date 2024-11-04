@@ -11,7 +11,7 @@ export default class BoardView {
     }
 
     drawTable() {
-        this.#printRemainFields();
+        this.printRemainFields();
         let p = document.getElementById("content");
         p.style.gridTemplateColumns = `repeat(${this.board.size}, 1fr)`;
         p.style.gridTemplateRows = `repeat(${this.board.size}, 1fr)`;
@@ -75,10 +75,10 @@ export default class BoardView {
         }
     }
 
-    #printRemainFields() {
+    printRemainFields() {
         document.getElementById(
             "remain-fields"
-        ).innerHTML = `Remain mines: ${this.board.mineCount}`;
+        ).innerHTML = `Remain mines: ${this.board.getRemainFieldsByFlags()}`;
     }
 
     #unrevealFields(fields) {
@@ -87,14 +87,17 @@ export default class BoardView {
         });
     }
 
-    updateField(field) {
-        let neighborMinesCount = this.#getFieldText(field.row, field.column);
-        const button = document.getElementById(`${field.id}`);
+    updateField(fieldData) {
+        let neighborMinesCount = this.#getFieldText(
+            fieldData.row,
+            fieldData.column
+        );
+        const button = document.getElementById(`${fieldData.id}`);
         button.value = neighborMinesCount === 0 ? "" : neighborMinesCount;
 
-        if (
-            this.board.fields[field.row][field.column].state === State.FLAGGED
-        ) {
+        let field = this.board.fields[fieldData.row][fieldData.column];
+
+        if (field.state === State.FLAGGED) {
             return;
         }
 
@@ -106,7 +109,7 @@ export default class BoardView {
         let unrevealedFields = this.board.unrevealField(row, column);
 
         this.#unrevealFields(unrevealedFields);
-        this.#printRemainFields();
+        this.printRemainFields();
 
         // Move to PlayMain
         if (this.board.hasRevealedMine) {
@@ -117,18 +120,23 @@ export default class BoardView {
     revealMines() {
         this.board.fields.forEach((row, i) => {
             row.forEach((field, j) => {
-                if (!field.hasMine) {
-                    return;
-                }
-
                 var button = document.getElementById(
                     this.board.convertToId(i, j)
                 );
 
+                if (!field.hasMine && field.state === State.FLAGGED) {
+                    button.classList.add("red-bg");
+                    return;
+                }
+
+                if (!field.hasMine || field.state === State.FLAGGED) {
+                    return;
+                }
+
                 button.value = "💣";
 
-                if (field.state == State.REVEALED) {
-                    button.classList.add("revealed-bomb");
+                if (field.state === State.REVEALED) {
+                    button.classList.add("red-bg");
                 } else {
                     button.classList = ["field", "revealed"];
                 }
