@@ -1,10 +1,15 @@
 "use strict";
 
-export function showOverlay(content) {
+export function showOverlay(content, hasCloseButton) {
     document.getElementById("popup").style.display = "block";
     document.getElementById("game").classList.add("disabled");
-    document.querySelector("#popup .content").textContent = content;
-    document.getElementById("popup").style.display = "block";
+
+    const contentElement = document.querySelector("#popup #popup-message");
+    contentElement.innerHTML = content; // Set inner HTML directly
+
+    if (!hasCloseButton) {
+        return;
+    }
 
     document
         .querySelector("#popup .close")

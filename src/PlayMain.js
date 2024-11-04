@@ -50,8 +50,14 @@ document.getElementById("content").addEventListener("mousedown", (event) => {
         if (holdTimer) {
             clearTimeout(holdTimer);
             bw.unrevealArea(fieldPositions.row, fieldPositions.column);
+
             if (bw.board.isGameWon()) {
-                const content = "You won the game!";
+                let content = "You won the game! ";
+                Popup.showOverlay(content);
+            }
+
+            if (bw.board.hasRevealedMine) {
+                let content = "You lost the game! ";
                 Popup.showOverlay(content);
             }
         }
@@ -77,9 +83,12 @@ document.getElementById("save-quit").addEventListener("click", (event) => {
     window.location.href = "index.html";
 });
 
-document
-    .getElementById("new-game")
-    .addEventListener("click", (event) => (window.location.href = "new.html"));
+for (let button of document.getElementsByClassName("new-game")) {
+    button.addEventListener(
+        "click",
+        (event) => (window.location.href = "new.html")
+    );
+}
 
 document
     .getElementById("quit")

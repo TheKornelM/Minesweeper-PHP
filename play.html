@@ -16,15 +16,18 @@
         <script src="./src/PlayMain.js" type="module"></script>
         <link rel="stylesheet" href="./style/style.css" />
         <link rel="stylesheet" href="./style/game.css" />
+        <link rel="stylesheet" href="./style/popup.css" />
     </head>
 
     <body hidden>
         <main>
-            <section id="popup">
-                <h2>
-                    Info <span title="click to close" class="close">X</span>
-                </h2>
-                <div class="content"></div>
+            <section id="popup" class="col-md-6 col-lg-4">
+                <h2>Info</h2>
+                <div id="popup-content">
+                    <div id="popup-message"></div>
+                    <input type="button" class="new-game" value="New Game"
+                    onclick="window.href.location = 'new.html'" / >
+                </div>
             </section>
             <section id="game">
                 <section id="navigation">
@@ -59,7 +62,7 @@
                                     <input
                                         type="button"
                                         id="new-game"
-                                        class="btn btn-primary w-100"
+                                        class="btn btn-primary w-100 new-game"
                                         value="New game"
                                     />
                                 </div>
