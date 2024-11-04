@@ -87,15 +87,18 @@ export default class BoardView {
         });
     }
 
-    updateField(field) {
-        let neighborMinesCount = this.#getFieldText(field.row, field.column);
-        const button = document.getElementById(`${field.id}`);
+    updateField(fieldData) {
+        let neighborMinesCount = this.#getFieldText(
+            fieldData.row,
+            fieldData.column
+        );
+        const button = document.getElementById(`${fieldData.id}`);
         button.value = neighborMinesCount === 0 ? "" : neighborMinesCount;
         this.#printRemainFields();
 
-        if (
-            this.board.fields[field.row][field.column].state === State.FLAGGED
-        ) {
+        let field = this.board.fields[fieldData.row][fieldData.column];
+
+        if (field.state === State.FLAGGED) {
             return;
         }
 

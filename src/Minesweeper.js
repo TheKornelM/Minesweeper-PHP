@@ -90,7 +90,6 @@ export default class Minesweeper {
 
         if (this.fields[row][column].state == State.FLAGGED) {
             this.flaggedFields--;
-            return;
         }
 
         this.fields[row][column].state = State.REVEALED;
