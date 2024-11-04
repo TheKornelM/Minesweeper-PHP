@@ -11,7 +11,7 @@ export default class BoardView {
     }
 
     drawTable() {
-        this.#printRemainFields();
+        this.printRemainFields();
         let p = document.getElementById("content");
         p.style.gridTemplateColumns = `repeat(${this.board.size}, 1fr)`;
         p.style.gridTemplateRows = `repeat(${this.board.size}, 1fr)`;
@@ -75,7 +75,7 @@ export default class BoardView {
         }
     }
 
-    #printRemainFields() {
+    printRemainFields() {
         document.getElementById(
             "remain-fields"
         ).innerHTML = `Remain mines: ${this.board.getRemainFieldsByFlags()}`;
@@ -94,7 +94,6 @@ export default class BoardView {
         );
         const button = document.getElementById(`${fieldData.id}`);
         button.value = neighborMinesCount === 0 ? "" : neighborMinesCount;
-        this.#printRemainFields();
 
         let field = this.board.fields[fieldData.row][fieldData.column];
 
@@ -110,7 +109,7 @@ export default class BoardView {
         let unrevealedFields = this.board.unrevealField(row, column);
 
         this.#unrevealFields(unrevealedFields);
-        this.#printRemainFields();
+        this.printRemainFields();
 
         // Move to PlayMain
         if (this.board.hasRevealedMine) {

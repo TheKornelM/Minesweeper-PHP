@@ -16,7 +16,19 @@ const bw = new BoardView(game);
 bw.drawTable();
 document.querySelector("body").removeAttribute("hidden");
 
-document.getElementById("content").addEventListener("mousedown", (event) => {
+document
+    .getElementById("content")
+    .addEventListener("mousedown", handleInteractionStart);
+
+document
+    .getElementById("content")
+    .addEventListener("touchstart", handleInteractionStart);
+
+function handleInteractionStart(event) {
+    if (event.type === "touchstart") {
+        event.preventDefault();
+    }
+
     const isButton =
         event.target.nodeName === "INPUT" &&
         event.target.type === "button" &&
@@ -36,6 +48,7 @@ document.getElementById("content").addEventListener("mousedown", (event) => {
         bw.board.changeFlag(fieldPositions.row, fieldPositions.column);
         let fieldState =
             bw.board.fields[fieldPositions.row][fieldPositions.column].state;
+        bw.printRemainFields();
 
         if (fieldState === State.FLAGGED) {
             bw.updateField(fieldPositions);
@@ -67,12 +80,16 @@ document.getElementById("content").addEventListener("mousedown", (event) => {
     const cleanup = () => {
         document.removeEventListener("mouseup", handleMouseUp);
         document.removeEventListener("mouseleave", handleMouseUp);
+        document.removeEventListener("touchend", handleMouseUp);
+        document.removeEventListener("touchcancel", handleMouseUp);
     };
 
     // Attach event listeners to detect when mouse is released or leaves the button area
     document.addEventListener("mouseup", handleMouseUp);
     document.addEventListener("mouseleave", handleMouseUp);
-});
+    document.addEventListener("touchend", handleMouseUp);
+    document.addEventListener("touchcancel", handleMouseUp);
+}
 
 document
     .getElementById("save-game")
