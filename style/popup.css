@@ -1,6 +1,7 @@
 /* Dim #game section but leave a fully visible overlay */
 :root {
     --popup-padding: 1.3vw;
+    --radius: 10px;
 }
 
 #game.disabled {
@@ -10,9 +11,16 @@
 }
 
 #popup-content {
-    padding: var(--popup-padding);
+    padding: calc(var(--popup-padding) * 2);
     font-size: 150%;
     text-align: center;
+}
+
+#popup input[type="button"] {
+    margin: calc(var(--popup-padding) * 2);
+    height: 10vh;
+    aspect-ratio: 16/9;
+    font-size: 100%;
 }
 
 /* Popup styling above the dimmed area */
@@ -23,18 +31,20 @@
     transform: translate(-50%, -50%);
     border: 1px solid #5c5c5c;
     background-color: white;
-    z-index: 2; /* Higher than #game overlay */
+    z-index: 2;
     display: none;
+    border-radius: var(--radius);
+    overflow: hidden; /* Clips content that overflows the border */
 }
 
 #popup h2 {
     color: #fff;
     background-color: #808080;
     padding: var(--popup-padding);
+    margin: 0;
 }
 
 #popup h2 > .close {
-    border: solid 1px #fff;
     padding: 2px;
     position: absolute;
     top: 10px;
@@ -43,18 +53,8 @@
 }
 
 @media (max-width: 1023px) and (min-height: 768px) {
-    input[type="button"] {
-        height: 5vh;
-        font-size: 3vh;
-    }
-
-    #popup h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-        font-size: 500%;
+    #popup input[type="button"] {
+        width: auto;
     }
 
     #popup-content {
