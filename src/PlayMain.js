@@ -49,6 +49,9 @@ document.getElementById("content").addEventListener("mousedown", (event) => {
         if (holdTimer) {
             clearTimeout(holdTimer);
             bw.unrevealArea(fieldPositions.row, fieldPositions.column);
+            if (bw.board.isGameWon()) {
+                alert("Won game!");
+            }
         }
         cleanup();
     };

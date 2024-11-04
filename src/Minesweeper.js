@@ -74,6 +74,10 @@ export default class Minesweeper {
         return row * this.size + column;
     }
 
+    isGameWon() {
+        return this.remainFields === this.mineCount;
+    }
+
     unrevealField(row, column, revealedFields = []) {
         /* Amennyiben az adott mező nem érvényes (pl. negatív szám), vagy
        korábban már felfedésre került az adott hely, akkor a rekurzió befejeződik. */
