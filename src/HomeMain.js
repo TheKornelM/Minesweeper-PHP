@@ -44,11 +44,12 @@ function printSaves() {
         let deleteDiv = document.createElement("div");
         deleteDiv.className = "col-md-6";
 
-        let deleteButton = document.createElement("input");
-        deleteButton.type = "button";
+        let deleteButton = document.createElement("button");
+        //deleteButton.type = "button";
         deleteButton.id = ind;
-        deleteButton.value = "Delete";
-        deleteButton.className = "delete-button";
+        deleteButton.classList = "delete-button btn btn-danger btn-md";
+        deleteButton.innerHTML = "<i class='fa fa-trash'></i> Delete";
+        deleteButton.title = "Delete";
 
         deleteDiv.append(deleteButton);
         save.append(deleteDiv);
