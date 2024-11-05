@@ -27,7 +27,7 @@ function printSaves() {
         save.className = "row save";
 
         let saveNameDiv = document.createElement("div");
-        saveNameDiv.className = "col-md-6";
+        saveNameDiv.className = "col-md-6 d-flex align-items-center";
 
         // Print save names
 
@@ -36,7 +36,6 @@ function printSaves() {
         link.append(element.name);
 
         saveNameDiv.append(link);
-        //saveNameDiv.append(`Size: ${element.board.size}`);
         save.append(saveNameDiv);
 
         // Print save delete buttons
