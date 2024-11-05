@@ -8,3 +8,17 @@ form.addEventListener("submit", (event) => {
     );
     event.preventDefault();
 });
+
+let range = document.getElementById("size");
+
+function updateSize() {
+    document.getElementById("current-size").innerHTML = range.value;
+}
+
+range.addEventListener("change", (event) => {
+    updateSize();
+});
+
+window.addEventListener("load", (event) => {
+    updateSize();
+});

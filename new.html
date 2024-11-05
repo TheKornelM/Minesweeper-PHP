@@ -24,15 +24,20 @@
             <form id="new-game" class="text-center">
                 <section class="row justify-content-center mb-3">
                     <div class="col-8 col-md-6 w-100">
-                        <label for="size" class="form-label">Size:</label>
+                        <label for="size" class="form-label">Size: </label>
                         <input
-                            type="number"
-                            name="size"
+                            type="range"
+                            class="form-range"
+                            min="4"
+                            max="15"
+                            step="1"
                             id="size"
-                            class="form-control"
-                            value="10"
+                            name="size"
                         />
                     </div>
+                </section>
+                <section class="row justify-content-center mb-5">
+                    <p id="current-size"></p>
                 </section>
 
                 <section class="row justify-content-center mb-5">
