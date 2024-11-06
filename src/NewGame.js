@@ -15,7 +15,7 @@ function updateSize() {
     document.getElementById("current-size").innerHTML = range.value;
 }
 
-range.addEventListener("change", (event) => {
+range.addEventListener("input", (event) => {
     updateSize();
 });
 
