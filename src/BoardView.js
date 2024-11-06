@@ -17,28 +17,29 @@ export default class BoardView {
         p.style.gridTemplateRows = `repeat(${this.board.size}, 1fr)`;
         for (let i = 0; i < this.board.size; i++) {
             for (let j = 0; j < this.board.size; j++) {
-                let btn = document.createElement("input");
-                btn.type = "button";
-                btn.classList += "field";
-                btn.id = i * this.board.size + j;
-                btn.value = this.#getFieldText(i, j);
-
-                let fieldState = this.board.fields[i][j].state;
-
-                if (
-                    fieldState === State.UNSELECTED ||
-                    fieldState === State.FLAGGED
-                ) {
-                    btn.classList += " unrevealed";
-                }
-
-                p.appendChild(btn);
+                p.appendChild(this.#createButton(i, j));
             }
         }
 
         if (this.board.hasRevealedMine) {
             this.revealMines();
         }
+    }
+
+    #createButton(row, column) {
+        let btn = document.createElement("input");
+        btn.type = "button";
+        btn.classList += "field";
+        btn.id = row * this.board.size + column;
+        btn.value = this.#getFieldText(row, column);
+
+        let fieldState = this.board.fields[row][column].state;
+
+        if (fieldState === State.UNSELECTED || fieldState === State.FLAGGED) {
+            btn.classList += " unrevealed";
+        }
+
+        return btn;
     }
 
     calculateRowColumnById(event) {

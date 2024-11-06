@@ -81,14 +81,18 @@ export default class Minesweeper {
     unrevealField(row, column, revealedFields = []) {
         /* Amennyiben az adott mező nem érvényes (pl. negatív szám), vagy
        korábban már felfedésre került az adott hely, akkor a rekurzió befejeződik. */
+
         if (
             !this.fieldExists(row, column) ||
-            this.fields[row][column].state == State.REVEALED
+            this.fields[row][column].state == State.REVEALED ||
+            this.fields[row][column].hasMine
         ) {
             return revealedFields;
         }
 
-        if (this.fields[row][column].state == State.FLAGGED) {
+        let field = this.fields[row][column];
+
+        if (field.state == State.FLAGGED) {
             this.flaggedFields--;
         }
 

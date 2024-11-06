@@ -95,11 +95,6 @@ document
     .getElementById("save-game")
     .addEventListener("click", (event) => saveGame(getSaveName(), bw.board));
 
-document.getElementById("save-quit").addEventListener("click", (event) => {
-    saveGame(getSaveName(), bw.board);
-    window.location.href = "index.html";
-});
-
 for (let button of document.getElementsByClassName("new-game")) {
     button.addEventListener(
         "click",
@@ -107,9 +102,6 @@ for (let button of document.getElementsByClassName("new-game")) {
     );
 }
 
-document
-    .getElementById("quit")
-    .addEventListener(
-        "click",
-        (event) => (window.location.href = "index.html")
-    );
+document.getElementById("quit").addEventListener("click", (event) => {
+    window.location.href = "index.html";
+});
