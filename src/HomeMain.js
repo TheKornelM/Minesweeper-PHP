@@ -27,7 +27,7 @@ function printSaves() {
         save.className = "row save";
 
         let saveNameDiv = document.createElement("div");
-        saveNameDiv.className = "col-md-6";
+        saveNameDiv.className = "col-md-6 d-flex align-items-center";
 
         // Print save names
 
@@ -36,7 +36,6 @@ function printSaves() {
         link.append(element.name);
 
         saveNameDiv.append(link);
-        //saveNameDiv.append(`Size: ${element.board.size}`);
         save.append(saveNameDiv);
 
         // Print save delete buttons
@@ -44,24 +43,31 @@ function printSaves() {
         let deleteDiv = document.createElement("div");
         deleteDiv.className = "col-md-6";
 
-        let deleteButton = document.createElement("input");
-        deleteButton.type = "button";
-        deleteButton.id = ind;
-        deleteButton.value = "Delete";
-        deleteButton.className = "delete-button";
-
-        deleteDiv.append(deleteButton);
+        deleteDiv.append(createDeleteButton(ind));
         save.append(deleteDiv);
 
         document.querySelector("#saves").append(save);
     });
 
     document.querySelector("body").removeAttribute("hidden");
+    attachDeleteButtonHandlers();
+}
 
-    document.querySelectorAll(".delete-button").forEach((elem) =>
+function createDeleteButton(index) {
+    let deleteButton = document.createElement("button");
+    deleteButton.id = index;
+    deleteButton.classList = "delete-button btn btn-danger btn-md";
+    deleteButton.innerHTML = "<i class='fa fa-trash'></i> Delete";
+    deleteButton.title = "Delete";
+
+    return deleteButton;
+}
+
+function attachDeleteButtonHandlers() {
+    document.querySelectorAll(".delete-button").forEach((elem) => {
         elem.addEventListener("click", (event) => {
             SaveGame.deleteSave(event.target.id);
             printSaves();
-        })
-    );
+        });
+    });
 }

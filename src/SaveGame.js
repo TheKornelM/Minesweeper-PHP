@@ -90,7 +90,6 @@ export function newGame() {
 export function deleteSave(id) {
     let games = parseGames();
     games.splice(id, 1);
-    console.log(games);
 
     if (games.length === 0) {
         deleteSaves();

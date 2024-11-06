@@ -16,6 +16,10 @@
             integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
             crossorigin="anonymous"
         />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        />
         <link rel="stylesheet" href="./style/style.css" />
         <link rel="stylesheet" href="./style/mainpage.css" />
     </head>
@@ -24,10 +28,19 @@
             <h1>Your saved games</h1>
 
             <section id="saves"></section>
-            <a href="./new.html">
-                <input type="button" value="New game" />
-            </a>
-            <input type="button" value="Delete saves" id="delete-saves" />
+            <form action="./new.html">
+                <input
+                    type="submit"
+                    value="New game"
+                    class="btn btn-lg btn-primary"
+                />
+                <input
+                    type="button"
+                    value="Delete saves"
+                    id="delete-saves"
+                    class="btn btn-danger btn-lg"
+                />
+            </form>
         </main>
     </body>
 </html>
