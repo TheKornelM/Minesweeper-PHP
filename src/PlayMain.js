@@ -14,6 +14,11 @@ if (!game) {
 
 const bw = new BoardView(game.board);
 
+// Elapsed time is null if we start a new game.
+if (game.elapsedTime) {
+    Stopwatch.set(game.elapsedTime);
+}
+
 Stopwatch.start();
 let timeout = setTimeout(logTime, 50);
 

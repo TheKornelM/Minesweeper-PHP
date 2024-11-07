@@ -21,6 +21,10 @@ export function stop() {
     clearTimeout(timeout);
 }
 
+export function set(newElapsedTime) {
+    elapsedTime = newElapsedTime;
+}
+
 function stopWatch() {
     if (!timer) {
         return;

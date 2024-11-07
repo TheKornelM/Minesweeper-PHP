@@ -77,9 +77,8 @@ export default class BoardView {
     }
 
     printRemainFields() {
-        document.getElementById(
-            "remain-fields"
-        ).innerHTML = `Remain mines: ${this.board.getRemainFieldsByFlags()}`;
+        document.getElementById("remaining-mines").innerHTML =
+            this.board.getRemainingFieldsByFlags();
     }
 
     #unrevealFields(fields) {
