@@ -4,6 +4,7 @@ import BoardView from "./BoardView.js";
 import { saveGame, loadGame, newGame, getSaveName } from "./SaveGame.js";
 import State from "./State.js";
 import * as Popup from "./Popup.js";
+import * as Stopwatch from "./Stopwatch.js";
 
 let game = loadGame() || newGame();
 
@@ -11,7 +12,31 @@ if (!game) {
     window.location.href = "new.html";
 }
 
-const bw = new BoardView(game);
+const bw = new BoardView(game.board);
+
+// Elapsed time is null if we start a new game.
+if (game.elapsedTime) {
+    Stopwatch.set(game.elapsedTime);
+}
+
+Stopwatch.start();
+let timeout = setTimeout(logTime, 50);
+
+function showTime() {
+    document.querySelector("#elapsed-time").innerHTML =
+        Stopwatch.getElapsedTimeString();
+}
+
+function logTime() {
+    showTime();
+    timeout = setTimeout(logTime, 50);
+}
+
+function stopLogTime() {
+    clearTimeout(timeout);
+    Stopwatch.stop();
+    showTime(); // Showing final time after stop
+}
 
 bw.drawTable();
 document.querySelector("body").removeAttribute("hidden");
@@ -60,20 +85,25 @@ function handleInteractionStart(event) {
 
     // If mouseup occurs before 500ms, unreveal field
     const handleMouseUp = () => {
-        if (holdTimer) {
-            clearTimeout(holdTimer);
-            bw.unrevealArea(fieldPositions.row, fieldPositions.column);
-
-            if (bw.board.isGameWon()) {
-                let content = "You won the game! ";
-                Popup.showOverlay(content);
-            }
-
-            if (bw.board.hasRevealedMine) {
-                let content = "You lost the game! ";
-                Popup.showOverlay(content);
-            }
+        if (!holdTimer) {
+            return;
         }
+
+        clearTimeout(holdTimer);
+        bw.unrevealArea(fieldPositions.row, fieldPositions.column);
+
+        if (bw.board.isGameWon()) {
+            stopLogTime();
+            let content = "You won the game! ";
+            Popup.showOverlay(content);
+        }
+
+        if (bw.board.hasRevealedMine) {
+            stopLogTime();
+            let content = "You lost the game! ";
+            Popup.showOverlay(content);
+        }
+
         cleanup();
     };
 
@@ -93,7 +123,9 @@ function handleInteractionStart(event) {
 
 document
     .getElementById("save-game")
-    .addEventListener("click", (event) => saveGame(getSaveName(), bw.board));
+    .addEventListener("click", (event) =>
+        saveGame(getSaveName(), bw.board, Stopwatch.elapsedTime)
+    );
 
 for (let button of document.getElementsByClassName("new-game")) {
     button.addEventListener(

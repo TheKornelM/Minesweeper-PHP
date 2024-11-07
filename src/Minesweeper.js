@@ -130,7 +130,7 @@ export default class Minesweeper {
         }
     }
 
-    getRemainFieldsByFlags() {
+    getRemainingFieldsByFlags() {
         return this.mineCount - this.flaggedFields;
     }
 
