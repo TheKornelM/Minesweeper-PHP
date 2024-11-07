@@ -36,10 +36,11 @@ const time = () =>
 export const deleteSaves = () => localStorage.removeItem("savedGames");
 export const getSaveName = () => `${date()} ${time()}`;
 
-export function saveGame(saveName, game) {
+export function saveGame(saveName, game, elapsedTime) {
     games.push({
         name: saveName,
         board: game,
+        elapsedTime: elapsedTime,
     });
 
     refreshCachedGames(games);
@@ -53,10 +54,13 @@ export function loadGame() {
 
     id--;
     let gameData = games[id].board;
-    let game = new Minesweeper(gameData.size);
-    Object.assign(game, gameData);
+    let game = {
+        board: new Minesweeper(gameData.size),
+        elapsedTime: games[id].elapsedTime,
+    };
+    Object.assign(game.board, gameData);
 
-    game.fields = gameData.fields.map((row) =>
+    game.board.fields = gameData.fields.map((row) =>
         row.map((fieldData) => Object.assign(new Field(), fieldData))
     );
 
@@ -84,7 +88,7 @@ export function newGame() {
         return null;
     }
 
-    return new Minesweeper(searchParams.get("size"), result);
+    return { board: new Minesweeper(searchParams.get("size"), result) };
 }
 
 export function deleteSave(id) {

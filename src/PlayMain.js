@@ -12,7 +12,7 @@ if (!game) {
     window.location.href = "new.html";
 }
 
-const bw = new BoardView(game);
+const bw = new BoardView(game.board);
 
 Stopwatch.start();
 let timeout = setTimeout(logTime, 50);
@@ -118,7 +118,9 @@ function handleInteractionStart(event) {
 
 document
     .getElementById("save-game")
-    .addEventListener("click", (event) => saveGame(getSaveName(), bw.board));
+    .addEventListener("click", (event) =>
+        saveGame(getSaveName(), bw.board, Stopwatch.elapsedTime)
+    );
 
 for (let button of document.getElementsByClassName("new-game")) {
     button.addEventListener(
