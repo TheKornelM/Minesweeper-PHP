@@ -1,6 +1,7 @@
 "use strict";
 
 let timer = false;
+
 export let elapsedTime = {
     hour: 0,
     minute: 0,
@@ -10,12 +11,12 @@ export let elapsedTime = {
 
 let timeout = setTimeout(stopWatch, 10);
 
-export function startStopwatch() {
+export function start() {
     timer = true;
     timeout = setTimeout(stopWatch, 10);
 }
 
-export function stopStopwatch() {
+export function stop() {
     timer = false;
     clearTimeout(timeout);
 }

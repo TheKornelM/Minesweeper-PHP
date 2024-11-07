@@ -14,13 +14,23 @@ if (!game) {
 
 const bw = new BoardView(game);
 
-Stopwatch.startStopwatch();
+Stopwatch.start();
 let timeout = setTimeout(logTime, 50);
 
-function logTime() {
+function showTime() {
     document.querySelector("#elapsed-time").innerHTML =
         Stopwatch.getElapsedTimeString();
+}
+
+function logTime() {
+    showTime();
     timeout = setTimeout(logTime, 50);
+}
+
+function stopLogTime() {
+    clearTimeout(timeout);
+    Stopwatch.stop();
+    showTime(); // Showing final time after stop
 }
 
 bw.drawTable();
@@ -78,11 +88,13 @@ function handleInteractionStart(event) {
         bw.unrevealArea(fieldPositions.row, fieldPositions.column);
 
         if (bw.board.isGameWon()) {
+            stopLogTime();
             let content = "You won the game! ";
             Popup.showOverlay(content);
         }
 
         if (bw.board.hasRevealedMine) {
+            stopLogTime();
             let content = "You lost the game! ";
             Popup.showOverlay(content);
         }
