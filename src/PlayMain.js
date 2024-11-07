@@ -4,6 +4,7 @@ import BoardView from "./BoardView.js";
 import { saveGame, loadGame, newGame, getSaveName } from "./SaveGame.js";
 import State from "./State.js";
 import * as Popup from "./Popup.js";
+import * as Stopwatch from "./Stopwatch.js";
 
 let game = loadGame() || newGame();
 
@@ -12,6 +13,15 @@ if (!game) {
 }
 
 const bw = new BoardView(game);
+
+Stopwatch.startStopwatch();
+let timeout = setTimeout(logTime, 50);
+
+function logTime() {
+    document.querySelector("#elapsed-time").innerHTML =
+        Stopwatch.getElapsedTimeString();
+    timeout = setTimeout(logTime, 50);
+}
 
 bw.drawTable();
 document.querySelector("body").removeAttribute("hidden");
@@ -60,20 +70,23 @@ function handleInteractionStart(event) {
 
     // If mouseup occurs before 500ms, unreveal field
     const handleMouseUp = () => {
-        if (holdTimer) {
-            clearTimeout(holdTimer);
-            bw.unrevealArea(fieldPositions.row, fieldPositions.column);
-
-            if (bw.board.isGameWon()) {
-                let content = "You won the game! ";
-                Popup.showOverlay(content);
-            }
-
-            if (bw.board.hasRevealedMine) {
-                let content = "You lost the game! ";
-                Popup.showOverlay(content);
-            }
+        if (!holdTimer) {
+            return;
         }
+
+        clearTimeout(holdTimer);
+        bw.unrevealArea(fieldPositions.row, fieldPositions.column);
+
+        if (bw.board.isGameWon()) {
+            let content = "You won the game! ";
+            Popup.showOverlay(content);
+        }
+
+        if (bw.board.hasRevealedMine) {
+            let content = "You lost the game! ";
+            Popup.showOverlay(content);
+        }
+
         cleanup();
     };
 
