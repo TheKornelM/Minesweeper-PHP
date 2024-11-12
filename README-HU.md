@@ -4,6 +4,7 @@ Készítette: Makári Kornél Sándor, MQOD6Q
 ## Alapvető információk
 - Felület nyelve: angol
 - Kliens oldalon megvalósított program (JavaScript)
+- Reszponzív, így például telefonon is játszhatunk.
 
 ## Játékmenet
 A játék célja, hogy felfedjünk minden mezőt, ahol **nem** található akna.\
@@ -30,3 +31,11 @@ távolítjuk a zászlót.
 
 ### Aknák
 Amennyire olyan mezőre lépünk, ahol akna található, a játék véget ér. Ekkor felfedésre kerül az összes akna helye, illetve piros alapon megjelölésre kerülnek az aknát nem tartalmazó, zászlóval jelölt mezők.
+
+## Fejlesztési tervek
+Az alábbi funkciók bevezetése van tervben szerveroldali megvalósítás esetén:
+- Pontszámok
+- XP rendszer
+- Rekordok tárolása
+- Achievement rendszer
+- VIP tagság
