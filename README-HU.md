@@ -5,6 +5,8 @@ Készítette: Makári Kornél Sándor, MQOD6Q
 - Felület nyelve: angol
 - Kliens oldalon megvalósított program (JavaScript)
 - Reszponzív, így például telefonon is játszhatunk.
+- Dokumentáció: https://thekornelm.github.io/Minesweeper-JS/
+- Az alábbi oldalon játszható a játék: https://thekornel.web.elte.hu/Minesweeper
 
 ## Játékmenet
 A játék célja, hogy felfedjünk minden mezőt, ahol **nem** található akna.\

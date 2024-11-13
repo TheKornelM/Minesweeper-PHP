@@ -5,6 +5,8 @@ Created by: Kornél Sándor Makári, MQOD6Q
 - Interface language: English
 - Client-side implemented program (JavaScript)
 - Responsive, so it can be played on phones as well.
+- Documentation: https://thekornelm.github.io/Minesweeper-JS/
+- Live demo: https://thekornel.web.elte.hu/Minesweeper
 
 ## Gameplay
 The goal of the game is to uncover all the tiles where there are **no** mines.\
