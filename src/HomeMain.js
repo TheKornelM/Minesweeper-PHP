@@ -14,47 +14,72 @@ window.addEventListener("load", (event) => {
 });
 
 function printSaves() {
-    document.querySelector("#saves").innerHTML = "";
-    const games = JSON.parse(localStorage.getItem("savedGames"));
+    clearSavesContainer();
+    const games = getSavedGames();
 
     if (!games) {
-        window.location.replace("/new.html");
+        redirectToNewGame();
         return;
     }
 
     games.forEach((element, ind) => {
-        let save = document.createElement("div");
-        save.className = "row save";
-
-        let saveNameDiv = document.createElement("div");
-        saveNameDiv.className = "col-md-6 d-flex align-items-center";
-
-        // Print save names
-
-        let link = document.createElement("a");
-        link.href = `/play.html?id=${ind + 1}`;
-        link.append(element.name);
-
-        saveNameDiv.append(link);
-        save.append(saveNameDiv);
-
-        // Print save delete buttons
-
-        let deleteDiv = document.createElement("div");
-        deleteDiv.className = "col-md-6";
-
-        deleteDiv.append(createDeleteButton(ind));
-        save.append(deleteDiv);
-
-        document.querySelector("#saves").append(save);
+        const saveElement = createSaveElement(element, ind);
+        document.querySelector("#saves").append(saveElement);
     });
 
     document.querySelector("body").removeAttribute("hidden");
     attachDeleteButtonHandlers();
 }
 
+function clearSavesContainer() {
+    document.querySelector("#saves").innerHTML = "";
+}
+
+function getSavedGames() {
+    return JSON.parse(localStorage.getItem("savedGames"));
+}
+
+function redirectToNewGame() {
+    window.location.replace("/new.html");
+}
+
+function createSaveElement(element, index) {
+    const save = document.createElement("div");
+    save.className = "row save";
+
+    const saveNameDiv = createSaveNameDiv(element, index);
+    save.append(saveNameDiv);
+
+    const deleteDiv = createDeleteDiv(index);
+    save.append(deleteDiv);
+
+    return save;
+}
+
+function createSaveNameDiv(element, index) {
+    const saveNameDiv = document.createElement("div");
+    saveNameDiv.className = "col-md-6 d-flex align-items-center";
+
+    const link = document.createElement("a");
+    link.href = `/play.html?id=${index + 1}`;
+    link.append(element.name);
+
+    saveNameDiv.append(link);
+    return saveNameDiv;
+}
+
+function createDeleteDiv(index) {
+    const deleteDiv = document.createElement("div");
+    deleteDiv.className = "col-md-6";
+
+    const deleteButton = createDeleteButton(index);
+    deleteDiv.append(deleteButton);
+
+    return deleteDiv;
+}
+
 function createDeleteButton(index) {
-    let deleteButton = document.createElement("button");
+    const deleteButton = document.createElement("button");
     deleteButton.id = index;
     deleteButton.classList = "delete-button btn btn-danger btn-md";
     deleteButton.innerHTML = "<i class='fa fa-trash'></i> Delete";
