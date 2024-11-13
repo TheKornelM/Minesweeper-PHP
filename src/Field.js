@@ -1,3 +1,7 @@
+/**
+ * @module
+ */
+
 "use strict";
 
 import State from "./State.js";
