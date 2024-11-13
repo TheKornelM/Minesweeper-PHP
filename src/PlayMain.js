@@ -81,39 +81,28 @@ function handleInteractionStart(event) {
     }
 
     let holdTimer;
+
     let fieldPositions = bw.calculateRowColumnById(event);
     fieldPositions.id = event.target.id;
 
-    holdTimer = setHoldTimer(event, fieldPositions);
+    // If the button is held down for 500ms, we change the flag on the field
+    holdTimer = setTimeout(() => {
+        changeFieldFlag(event, fieldPositions);
+        holdTimer = null;
+    }, 500); // 500ms threshold for detecting a hold
 
+    // If mouseup occurs before 500ms, unreveal field
     const handleMouseUp = () => {
         if (!holdTimer) {
             return;
         }
 
         clearTimeout(holdTimer);
-        bw.unrevealArea(fieldPositions.row, fieldPositions.column);
-
-        if (bw.board.isGameWon()) {
-            stopLogTime();
-            Popup.showOverlay("You won the game!");
-        }
-
-        if (bw.board.hasRevealedMine) {
-            stopLogTime();
-            Popup.showOverlay("You lost the game!");
-        }
-
-        cleanup();
+        revealField(fieldPositions);
+        cleanup(handleMouseUp);
     };
 
-    const cleanup = () => {
-        document.removeEventListener("mouseup", handleMouseUp);
-        document.removeEventListener("mouseleave", handleMouseUp);
-        document.removeEventListener("touchend", handleMouseUp);
-        document.removeEventListener("touchcancel", handleMouseUp);
-    };
-
+    // Attach event listeners to detect when mouse is released or leaves the button area
     attachFieldEventListeners(handleMouseUp);
 }
 
@@ -127,19 +116,40 @@ function isValidButton(event) {
     );
 }
 
-function setHoldTimer(event, fieldPositions) {
-    return setTimeout(() => {
-        bw.board.changeFlag(fieldPositions.row, fieldPositions.column);
-        let fieldState =
-            bw.board.fields[fieldPositions.row][fieldPositions.column].state;
-        bw.printRemainFields();
+function changeFieldFlag(event, fieldPositions) {
+    bw.board.changeFlag(fieldPositions.row, fieldPositions.column);
+    let fieldState =
+        bw.board.fields[fieldPositions.row][fieldPositions.column].state;
+    bw.printRemainFields();
 
-        if (fieldState === State.FLAGGED) {
-            bw.updateField(fieldPositions);
-        } else if (fieldState === State.UNSELECTED) {
-            event.target.value = "";
-        }
-    }, 500); // 500ms threshold for detecting a hold
+    if (fieldState === State.FLAGGED) {
+        bw.updateField(fieldPositions);
+    } else if (fieldState === State.UNSELECTED) {
+        event.target.value = "";
+    }
+}
+
+function revealField(fieldPositions) {
+    bw.unrevealArea(fieldPositions.row, fieldPositions.column);
+
+    if (bw.board.isGameWon()) {
+        stopLogTime();
+        let content = "You won the game! ";
+        Popup.showOverlay(content);
+    }
+
+    if (bw.board.hasRevealedMine) {
+        stopLogTime();
+        let content = "You lost the game! ";
+        Popup.showOverlay(content);
+    }
+}
+
+function cleanup(handleMouseUp) {
+    document.removeEventListener("mouseup", handleMouseUp);
+    document.removeEventListener("mouseleave", handleMouseUp);
+    document.removeEventListener("touchend", handleMouseUp);
+    document.removeEventListener("touchcancel", handleMouseUp);
 }
 
 function attachFieldEventListeners(handleMouseUp) {
