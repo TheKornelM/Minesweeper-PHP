@@ -121,17 +121,21 @@ function handleInteractionStart(event) {
             Popup.showOverlay(content);
         }
 
-        cleanup();
-    };
-
-    const cleanup = () => {
-        document.removeEventListener("mouseup", handleMouseUp);
-        document.removeEventListener("mouseleave", handleMouseUp);
-        document.removeEventListener("touchend", handleMouseUp);
-        document.removeEventListener("touchcancel", handleMouseUp);
+        cleanup(handleMouseUp);
     };
 
     // Attach event listeners to detect when mouse is released or leaves the button area
+    attachFieldEventListeners(handleMouseUp);
+}
+
+function cleanup(handleMouseUp) {
+    document.removeEventListener("mouseup", handleMouseUp);
+    document.removeEventListener("mouseleave", handleMouseUp);
+    document.removeEventListener("touchend", handleMouseUp);
+    document.removeEventListener("touchcancel", handleMouseUp);
+}
+
+function attachFieldEventListeners(handleMouseUp) {
     document.addEventListener("mouseup", handleMouseUp);
     document.addEventListener("mouseleave", handleMouseUp);
     document.addEventListener("touchend", handleMouseUp);
