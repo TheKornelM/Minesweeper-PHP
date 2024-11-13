@@ -87,16 +87,7 @@ function handleInteractionStart(event) {
 
     // If the button is held down for 500ms, we change the flag on the field
     holdTimer = setTimeout(() => {
-        bw.board.changeFlag(fieldPositions.row, fieldPositions.column);
-        let fieldState =
-            bw.board.fields[fieldPositions.row][fieldPositions.column].state;
-        bw.printRemainFields();
-
-        if (fieldState === State.FLAGGED) {
-            bw.updateField(fieldPositions);
-        } else if (fieldState === State.UNSELECTED) {
-            event.target.value = "";
-        }
+        changeFieldFlag(event, fieldPositions);
         holdTimer = null;
     }, 500); // 500ms threshold for detecting a hold
 
@@ -107,25 +98,51 @@ function handleInteractionStart(event) {
         }
 
         clearTimeout(holdTimer);
-        bw.unrevealArea(fieldPositions.row, fieldPositions.column);
-
-        if (bw.board.isGameWon()) {
-            stopLogTime();
-            let content = "You won the game! ";
-            Popup.showOverlay(content);
-        }
-
-        if (bw.board.hasRevealedMine) {
-            stopLogTime();
-            let content = "You lost the game! ";
-            Popup.showOverlay(content);
-        }
-
+        revealField(fieldPositions);
         cleanup(handleMouseUp);
     };
 
     // Attach event listeners to detect when mouse is released or leaves the button area
     attachFieldEventListeners(handleMouseUp);
+}
+
+function isValidButton(event) {
+    return (
+        event.target.nodeName === "INPUT" &&
+        event.target.type === "button" &&
+        event.target.classList.contains("field") &&
+        !bw.board.hasRevealedMine &&
+        !bw.board.isGameWon()
+    );
+}
+
+function changeFieldFlag(event, fieldPositions) {
+    bw.board.changeFlag(fieldPositions.row, fieldPositions.column);
+    let fieldState =
+        bw.board.fields[fieldPositions.row][fieldPositions.column].state;
+    bw.printRemainFields();
+
+    if (fieldState === State.FLAGGED) {
+        bw.updateField(fieldPositions);
+    } else if (fieldState === State.UNSELECTED) {
+        event.target.value = "";
+    }
+}
+
+function revealField(fieldPositions) {
+    bw.unrevealArea(fieldPositions.row, fieldPositions.column);
+
+    if (bw.board.isGameWon()) {
+        stopLogTime();
+        let content = "You won the game! ";
+        Popup.showOverlay(content);
+    }
+
+    if (bw.board.hasRevealedMine) {
+        stopLogTime();
+        let content = "You lost the game! ";
+        Popup.showOverlay(content);
+    }
 }
 
 function cleanup(handleMouseUp) {
@@ -140,14 +157,4 @@ function attachFieldEventListeners(handleMouseUp) {
     document.addEventListener("mouseleave", handleMouseUp);
     document.addEventListener("touchend", handleMouseUp);
     document.addEventListener("touchcancel", handleMouseUp);
-}
-
-function isValidButton(event) {
-    return (
-        event.target.nodeName === "INPUT" &&
-        event.target.type === "button" &&
-        event.target.classList.contains("field") &&
-        !bw.board.hasRevealedMine &&
-        !bw.board.isGameWon()
-    );
 }
