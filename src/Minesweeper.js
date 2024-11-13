@@ -18,6 +18,9 @@ import Field from "./Field.js";
 export const MIN_SIZE = 4;
 export const MAX_SIZE = 15;
 
+/**
+ * Represents a Minesweeper board
+ */
 export default class Minesweeper {
     /**
      * The size of the board (size x size).

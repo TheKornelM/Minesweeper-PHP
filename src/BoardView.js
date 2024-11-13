@@ -4,12 +4,24 @@ import Minesweeper from "./Minesweeper.js";
 import State from "./State.js";
 
 export default class BoardView {
+    /**
+     * The Minesweeper board to display.
+     * @type {Minesweeper}
+     */
     board;
 
+    /**
+     * Creates an instance of BoardView.
+     *
+     * @param {Minesweeper} board - The Minesweeper board to show.
+     */
     constructor(board) {
         this.board = board;
     }
 
+    /**
+     * Draws the Minesweeper board as a table.
+     */
     drawTable() {
         this.printRemainFields();
         let p = document.getElementById("content");
@@ -26,6 +38,14 @@ export default class BoardView {
         }
     }
 
+    /**
+     * Creates a button element for a field.
+     *
+     * @param {number} row - The row number of the field.
+     * @param {number} column - The column number of the field.
+     * @returns {HTMLInputElement} The created button element.
+     * @private
+     */
     #createButton(row, column) {
         let btn = document.createElement("input");
         btn.type = "button";
@@ -42,6 +62,12 @@ export default class BoardView {
         return btn;
     }
 
+    /**
+     * Calculates the row and column of a field based on its ID.
+     *
+     * @param {Event} event - The event triggered by the user.
+     * @returns {Object} An object containing the row and column numbers.
+     */
     calculateRowColumnById(event) {
         const row =
             (event.target.id - (event.target.id % this.board.size)) /
@@ -53,6 +79,14 @@ export default class BoardView {
         };
     }
 
+    /**
+     * Gets the text to display on a field button.
+     *
+     * @param {number} row - The row number of the field.
+     * @param {number} column - The column number of the field.
+     * @returns {string|number} The text to display on the field button.
+     * @private
+     */
     #getFieldText(row, column) {
         switch (this.board.fields[row][column].state) {
             case State.UNSELECTED:
@@ -76,17 +110,34 @@ export default class BoardView {
         }
     }
 
+    /**
+     * Prints the number of remaining fields.
+     */
     printRemainFields() {
         document.getElementById("remaining-mines").innerHTML =
             this.board.getRemainingFieldsByFlags();
     }
 
+    /**
+     * Unreveals a list of fields.
+     *
+     * @param {Array} fields - The list of fields to unreveal.
+     * @private
+     */
     #unrevealFields(fields) {
         fields.forEach((item) => {
             this.updateField(item);
         });
     }
 
+    /**
+     * Updates the display of a field.
+     *
+     * @param {Object} fieldData - The data of the field to update.
+     * @param {number} fieldData.id - The ID of the field.
+     * @param {number} fieldData.row - The row number of the field.
+     * @param {number} fieldData.column - The column number of the field.
+     */
     updateField(fieldData) {
         let neighborMinesCount = this.#getFieldText(
             fieldData.row,
@@ -104,6 +155,12 @@ export default class BoardView {
         button.classList.remove("unrevealed");
     }
 
+    /**
+     * Unreveals an area starting from a specific field.
+     *
+     * @param {number} row - The row number of the starting field.
+     * @param {number} column - The column number of the starting field.
+     */
     unrevealArea(row, column) {
         this.board.selectField(row, column);
         let unrevealedFields = this.board.unrevealField(row, column);
@@ -111,12 +168,14 @@ export default class BoardView {
         this.#unrevealFields(unrevealedFields);
         this.printRemainFields();
 
-        // Move to PlayMain
         if (this.board.hasRevealedMine) {
             this.revealMines();
         }
     }
 
+    /**
+     * Reveals all mines on the board.
+     */
     revealMines() {
         this.board.fields.forEach((row, i) => {
             row.forEach((field, j) => {

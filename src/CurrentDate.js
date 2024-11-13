@@ -1,6 +1,11 @@
 "use strict";
 
-let locationCode = "en-EN"; // default location code
+/**
+ * Default location code
+ * If the language code is not defined among the parameters of the function, then it is used
+ * @type {string}
+ */
+export let locationCode = "en-EN"; // default location code
 
 /**
  * Sets the location code for date and time formatting.
