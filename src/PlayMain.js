@@ -4,7 +4,7 @@ import BoardView from "./BoardView.js";
 import { saveGame, loadGame, newGame, getSaveName } from "./SaveGame.js";
 import State from "./State.js";
 import * as Popup from "./Popup.js";
-import * as Stopwatch from "./Stopwatch.js";
+import Stopwatch from "./Stopwatch.js";
 
 let game = loadGame() || newGame();
 
@@ -14,12 +14,13 @@ if (!game) {
 
 const bw = new BoardView(game.board);
 
+let stopwatch = new Stopwatch();
 // Elapsed time is null if we start a new game.
 if (game.elapsedTime) {
-    Stopwatch.set(game.elapsedTime);
+    stopwatch.set(game.elapsedTime);
 }
 
-Stopwatch.start();
+stopwatch.start();
 let timeout = setTimeout(startLogTime, 50);
 
 bw.drawTable();
@@ -39,7 +40,7 @@ function addEventListeners() {
     document
         .getElementById("save-game")
         .addEventListener("click", (event) =>
-            saveGame(getSaveName(), bw.board, Stopwatch.elapsedTime)
+            saveGame(getSaveName(), bw.board, stopwatch.elapsedTime)
         );
 
     for (let button of document.getElementsByClassName("new-game")) {
@@ -56,7 +57,7 @@ function addEventListeners() {
 
 function showTime() {
     document.querySelector("#elapsed-time").innerHTML =
-        Stopwatch.getElapsedTimeString();
+        stopwatch.getElapsedTimeString();
 }
 
 function startLogTime() {
@@ -66,7 +67,7 @@ function startLogTime() {
 
 function stopLogTime() {
     clearTimeout(timeout);
-    Stopwatch.stop();
+    stopwatch.stop();
     showTime(); // Showing final time after stop
 }
 
