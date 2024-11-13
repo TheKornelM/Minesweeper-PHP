@@ -81,11 +81,26 @@ function handleInteractionStart(event) {
     }
 
     let holdTimer;
+
     let fieldPositions = bw.calculateRowColumnById(event);
     fieldPositions.id = event.target.id;
 
-    holdTimer = setHoldTimer(event, fieldPositions);
+    // If the button is held down for 500ms, we change the flag on the field
+    holdTimer = setTimeout(() => {
+        bw.board.changeFlag(fieldPositions.row, fieldPositions.column);
+        let fieldState =
+            bw.board.fields[fieldPositions.row][fieldPositions.column].state;
+        bw.printRemainFields();
 
+        if (fieldState === State.FLAGGED) {
+            bw.updateField(fieldPositions);
+        } else if (fieldState === State.UNSELECTED) {
+            event.target.value = "";
+        }
+        holdTimer = null;
+    }, 500); // 500ms threshold for detecting a hold
+
+    // If mouseup occurs before 500ms, unreveal field
     const handleMouseUp = () => {
         if (!holdTimer) {
             return;
@@ -96,12 +111,14 @@ function handleInteractionStart(event) {
 
         if (bw.board.isGameWon()) {
             stopLogTime();
-            Popup.showOverlay("You won the game!");
+            let content = "You won the game! ";
+            Popup.showOverlay(content);
         }
 
         if (bw.board.hasRevealedMine) {
             stopLogTime();
-            Popup.showOverlay("You lost the game!");
+            let content = "You lost the game! ";
+            Popup.showOverlay(content);
         }
 
         cleanup();
@@ -114,7 +131,11 @@ function handleInteractionStart(event) {
         document.removeEventListener("touchcancel", handleMouseUp);
     };
 
-    attachFieldEventListeners(handleMouseUp);
+    // Attach event listeners to detect when mouse is released or leaves the button area
+    document.addEventListener("mouseup", handleMouseUp);
+    document.addEventListener("mouseleave", handleMouseUp);
+    document.addEventListener("touchend", handleMouseUp);
+    document.addEventListener("touchcancel", handleMouseUp);
 }
 
 function isValidButton(event) {
@@ -125,26 +146,4 @@ function isValidButton(event) {
         !bw.board.hasRevealedMine &&
         !bw.board.isGameWon()
     );
-}
-
-function setHoldTimer(event, fieldPositions) {
-    return setTimeout(() => {
-        bw.board.changeFlag(fieldPositions.row, fieldPositions.column);
-        let fieldState =
-            bw.board.fields[fieldPositions.row][fieldPositions.column].state;
-        bw.printRemainFields();
-
-        if (fieldState === State.FLAGGED) {
-            bw.updateField(fieldPositions);
-        } else if (fieldState === State.UNSELECTED) {
-            event.target.value = "";
-        }
-    }, 500); // 500ms threshold for detecting a hold
-}
-
-function attachFieldEventListeners(handleMouseUp) {
-    document.addEventListener("mouseup", handleMouseUp);
-    document.addEventListener("mouseleave", handleMouseUp);
-    document.addEventListener("touchend", handleMouseUp);
-    document.addEventListener("touchcancel", handleMouseUp);
 }
