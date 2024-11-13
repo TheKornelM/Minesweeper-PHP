@@ -1,5 +1,14 @@
+/**
+ * @module
+ */
+
 "use strict";
 
+/**
+ * Displays an overlay with the specified content.
+ * @param {string} content - The HTML content to display inside the overlay.
+ * @param {boolean} hasCloseButton - Indicates whether the overlay should have a close button.
+ */
 export function showOverlay(content, hasCloseButton) {
     document.getElementById("popup").style.display = "block";
     document.getElementById("game").classList.add("disabled");
@@ -18,6 +27,9 @@ export function showOverlay(content, hasCloseButton) {
         });
 }
 
+/**
+ * Hides the overlay and re-enables the game.
+ */
 export function hideOverlay() {
     document.getElementById("popup").style.display = "none";
     document.getElementById("game").classList.remove("disabled");

@@ -12,7 +12,9 @@ form.addEventListener("submit", (event) => {
 let range = document.getElementById("size");
 
 function updateSize() {
-    document.getElementById("current-size").innerHTML = range.value;
+    document.getElementById(
+        "current-size"
+    ).innerHTML = `${range.value}x${range.value}`;
 }
 
 range.addEventListener("input", (event) => {
