@@ -1,17 +1,17 @@
 "use strict";
 
-/** 
-   State
+"use strict";
 
-   Feladata:
-      Egy mező állapotának reprezentálása
-
-   Állapotok:
-      - UNSELECTED: a mező tartalma nem ismert a felhasználónak, nem volt még kiválasztva/felfedve
-      - FLAGGED: zászlóval megjelölve, potenciálisan akna van ott
-      - REVEALED: a mezőt kiválasztotta a felhasználó / az algoritmus felfedte, mert üres
-
-*/
+/**
+ * State
+ *
+ * Represents the state of a field.
+ *
+ * States:
+ * - UNSELECTED: The content of the field is unknown to the user, it has not been selected/revealed yet.
+ * - FLAGGED: Marked with a flag, potentially indicating a mine.
+ * - REVEALED: The field has been selected by the user or revealed by the algorithm because it is empty.
+ */
 
 export default Object.freeze({
     UNSELECTED: 0,

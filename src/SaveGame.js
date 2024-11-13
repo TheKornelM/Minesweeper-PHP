@@ -3,6 +3,7 @@
 import { default as Minesweeper, MIN_SIZE, MAX_SIZE } from "./Minesweeper.js";
 import Field from "./Field.js";
 import Difficulty from "./Difficulty.js";
+import * as CurrentDate from "./CurrentDate.js";
 
 /**
  * Parses saved games from localStorage.
@@ -16,6 +17,7 @@ const parseGames = () => {
 
 const searchParams = new URLSearchParams(window.location.search);
 let games = parseGames();
+CurrentDate.setLocationCode("hu-HU");
 
 /**
  * Refreshes the cached games in localStorage.
@@ -24,33 +26,6 @@ let games = parseGames();
  */
 const refreshCachedGames = (games) =>
     localStorage.setItem("savedGames", JSON.stringify(games));
-
-/**
- * Gets the current date in YYYY-MM-DD format.
- *
- * @returns {string} The current date.
- */
-const date = () =>
-    new Date()
-        .toLocaleDateString("hu-HU", {
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit",
-        })
-        .split("/")
-        .reverse()
-        .join("-");
-
-/**
- * Gets the current time in HH:MM format.
- *
- * @returns {string} The current time.
- */
-const time = () =>
-    new Date().toLocaleTimeString("hu-HU", {
-        hour: "2-digit",
-        minute: "2-digit",
-    });
 
 /**
  * Deletes all saved games from localStorage.
@@ -62,7 +37,7 @@ export const deleteSaves = () => localStorage.removeItem("savedGames");
  *
  * @returns {string} The generated save name.
  */
-export const getSaveName = () => `${date()} ${time()}`;
+export const getSaveName = () => `${CurrentDate.date()} ${CurrentDate.time()}`;
 
 /**
  * Saves a game to localStorage.
