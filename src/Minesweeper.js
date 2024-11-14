@@ -159,6 +159,11 @@ export default class Minesweeper {
 
         if (field.state == State.FLAGGED) {
             this.flaggedFields--;
+
+            // Return from recursion if the first field is flagged
+            if (revealedFields.length === 0) {
+                return revealedFields;
+            }
         }
 
         this.fields[row][column].state = State.REVEALED;
