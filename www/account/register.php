@@ -4,11 +4,11 @@ include "../../src/Managers/UserManager.php";
 include "../../src/Repository/Interfaces/UserRepositoryInterface.php";
 include "../../src/Repository/PostgreRepositories/UserRepository.php";
 include "../../src/Validators/ValidationResult.php";
-include "../../src/Validators/UsernameValidator.php";
+include "../../src/Validators/UserDataValidator.php";
 
 use Repository\PostgreRepositories\UserRepository;
 use Managers\UserManager;
-use Validators\UsernameValidator;
+use Validators\UserDataValidator;
 
 $message = "";
 $toastClass = "";
@@ -18,8 +18,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    $validator = new UsernameValidator();
-    $validationResult = $validator->validate($username);
+    $validator = new UserDataValidator();
+    $validationResult = $validator->validate($username, $email, $password);
 
     try {
 
@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $manager = new UserManager($repository);
 
         if (!$validationResult->isValid) {
-            $message = implode("\n", $validationResult->errors);
+            $message = implode("<br>", $validationResult->errors);
             $toastClass = "#007bff";
         }
         else if ($manager->EmailExists($email)) {

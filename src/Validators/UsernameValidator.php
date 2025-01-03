@@ -4,6 +4,8 @@ namespace Validators;
 
 use Validators\ValidationResult;
 
+define("MAX_USERNAME_LENGTH", 128);
+
 class UsernameValidator
 {
     public static function validate(string $username): ValidationResult
@@ -20,9 +22,9 @@ class UsernameValidator
             $errors[] = "Username can only contain letters, numbers, and underscores.";
         }
 
-        // Check if the username is a maximum of 45 characters long
-        if (strlen($username) > 45) {
-            $errors[] = "Username cannot be longer than 45 characters.";
+        // Check username length
+        if (strlen($username) > MAX_USERNAME_LENGTH) {
+            $errors[] = "Username cannot be longer than " . MAX_USERNAME_LENGTH . " characters.";
         }
 
         // Return the result object
