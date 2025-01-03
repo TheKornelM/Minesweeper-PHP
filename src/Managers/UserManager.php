@@ -13,7 +13,7 @@ class UserManager
 
     public function registerUser(string $username, string $email, string $password)
     {
-        return $this->userRepository->registerUser($username, $email, $password);
+        return $this->userRepository->registerUser($username, $email, password_hash($password, PASSWORD_BCRYPT));
     }
 
     public function emailExists(string $email): bool

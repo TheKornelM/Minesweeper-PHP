@@ -4,56 +4,98 @@ namespace Repository\PostgreRepositories;
 
 use Repository\Interfaces\UserRepositoryInterface;
 
+/**
+ * UserRepository: A repository class for managing user-related database operations.
+ */
 class UserRepository implements UserRepositoryInterface
 {
-    private $pdo;
+    /**
+     * @var \PDO $databaseConnection The PDO database connection instance.
+     */
+    private $databaseConnection;
 
-    function __construct(\PDO $pdo)
+    /**
+     * Constructor to initialize the UserRepository with a PDO connection.
+     *
+     * @param \PDO $databaseConnection The PDO database connection instance.
+     */
+    public function __construct(\PDO $databaseConnection)
     {
-        $this->pdo = $pdo;
+        $this->databaseConnection = $databaseConnection;
     }
 
-    public function isValidCredentials($email, $password): bool
+    /**
+     * Verifies if the provided email and password match a user in the database.
+     *
+     * @param string $email    The email address of the user.
+     * @param string $password The plaintext password entered by the user.
+     * @return bool Returns true if the credentials are valid, otherwise false.
+     */
+    public function isValidCredentials(string $email, string $password): bool
     {
-        $stmt = $this->pdo->prepare("SELECT password FROM userdata WHERE email = :email");
-        $stmt->bindParam(':email', $email);
-        $stmt->execute();
+        $query = "SELECT password FROM userdata WHERE email = :email";
+        $statement = $this->databaseConnection->prepare($query);
+        $statement->bindParam(':email', $email);
+        $statement->execute();
 
-        if ($stmt->rowCount() === 0) {
+        if ($statement->rowCount() === 0) {
             return false;
         }
 
-        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-        $db_password = $row['password'];
+        $userRecord = $statement->fetch(\PDO::FETCH_ASSOC);
+        $hashedPassword = $userRecord['password'];
 
-        return $password === $db_password;
+        return password_verify($password, $hashedPassword);
     }
 
+    /**
+     * Registers a new user by inserting their details into the database.
+     *
+     * @param string $username The username chosen by the user.
+     * @param string $email    The email address of the user.
+     * @param string $password The hashed password of the user.
+     * @return bool Returns true if the user is successfully registered, otherwise false.
+     */
     public function registerUser(string $username, string $email, string $password): bool
     {
-        $stmt = $this->pdo->prepare("INSERT INTO userdata (username, email, password) VALUES (:username, :email, :password)");
-        $stmt->bindParam(':username', $username);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':password', $password);
+        $query = "INSERT INTO userdata (username, email, password) VALUES (:username, :email, :password)";
+        $statement = $this->databaseConnection->prepare($query);
+        $statement->bindParam(':username', $username);
+        $statement->bindParam(':email', $email);
+        $statement->bindParam(':password', $password);
 
-        return $stmt->execute();
+        return $statement->execute();
     }
 
+    /**
+     * Checks if an email address already exists in the database.
+     *
+     * @param string $email The email address to check.
+     * @return bool Returns true if the email exists, otherwise false.
+     */
     public function emailExists(string $email): bool
     {
-        $checkEmailStmt = $this->pdo->prepare("SELECT email FROM userdata WHERE email = :email");
-        $checkEmailStmt->bindParam(':email', $email);
-        $checkEmailStmt->execute();
+        $query = "SELECT email FROM userdata WHERE email = :email";
+        $statement = $this->databaseConnection->prepare($query);
+        $statement->bindParam(':email', $email);
+        $statement->execute();
 
-        return $checkEmailStmt->rowCount() > 0;
+        return $statement->rowCount() > 0;
     }
 
+    /**
+     * Checks if a username already exists in the database.
+     *
+     * @param string $username The username to check.
+     * @return bool Returns true if the username exists, otherwise false.
+     */
     public function usernameExists(string $username): bool
     {
-        $checkUsername = $this->pdo->prepare("SELECT username FROM userdata WHERE username = :username");
-        $checkUsername->bindParam(':username', $username);
-        $checkUsername->execute();
+        $query = "SELECT username FROM userdata WHERE username = :username";
+        $statement = $this->databaseConnection->prepare($query);
+        $statement->bindParam(':username', $username);
+        $statement->execute();
 
-        return $checkUsername->rowCount() > 0;
+        return $statement->rowCount() > 0;
     }
 }
