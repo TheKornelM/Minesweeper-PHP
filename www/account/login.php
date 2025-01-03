@@ -11,19 +11,19 @@ $message = "";
 $toastClass = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST['email'];
+    $username = $_POST['username'];
     $password = $_POST['password'];
 
     $repository = new UserRepository($conn);
     $manager = new UserManager($repository);
 
     try {
-        if ($manager->isValidCredentials($email, $password)) {
+        if ($manager->isValidCredentials($username, $password)) {
             $message = "Login successful";
             $toastClass = "bg-success";
             // Start the session and redirect to the dashboard or home page
             session_start();
-            $_SESSION['email'] = $email;
+            $_SESSION['email'] = $username;
             header("Location: dashboard.php");
             exit();
         } else {
@@ -69,8 +69,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <h5 class="text-center p-4" style="font-weight: 700;">Login Into Your Account</h5>
         </div>
         <div class="col-mb-3">
-            <label for="email"><i class="fa fa-envelope"></i> Email</label>
-            <input type="text" name="email" id="email" class="form-control" required>
+            <label for="username"><i class="fa fa-envelope"></i> Username</label>
+            <input type="text" name="username" id="username" class="form-control" required>
         </div>
         <div class="col mb-3 mt-3">
             <label for="password"><i class="fa fa-lock"></i> Password</label>

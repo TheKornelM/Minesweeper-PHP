@@ -27,17 +27,15 @@ class UserRepository implements UserRepositoryInterface
     /**
      * Verifies if the provided email and password match a user in the database.
      *
-     * @param string $email    The email address of the user.
+     * @param string $username    The email address of the user.
      * @param string $password The plaintext password entered by the user.
      * @return bool Returns true if the credentials are valid, otherwise false.
      */
-    public function isValidCredentials(string $email, string $password): bool
+    public function isValidCredentials(string $username, string $password): bool
     {
-        $normalizedEmail = strtolower($email);
-
-        $query = "SELECT password FROM userdata WHERE email = :email";
+        $query = "SELECT password FROM userdata WHERE username = :username";
         $statement = $this->databaseConnection->prepare($query);
-        $statement->bindParam(':email', $normalizedEmail);
+        $statement->bindParam(':username', $username);
         $statement->execute();
 
         if ($statement->rowCount() === 0) {
