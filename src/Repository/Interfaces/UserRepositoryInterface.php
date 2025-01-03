@@ -6,5 +6,6 @@ interface UserRepositoryInterface
     public function emailExists(string $email): bool;
     public function usernameExists(string $username): bool;
     public function isValidCredentials(string $username, string $password): bool;
+    public function getUserId(string $username): int;
 
 }

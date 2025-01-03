@@ -40,7 +40,7 @@ function getSavedGames() {
 }
 
 function redirectToNewGame() {
-    window.location.replace("/new.html");
+    window.location.href = "new.php";
 }
 
 function createSaveElement(element, index) {

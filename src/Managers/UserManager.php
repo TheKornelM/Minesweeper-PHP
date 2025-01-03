@@ -26,7 +26,13 @@ class UserManager
         return $this->userRepository->usernameExists($username);
     }
 
-    public function isValidCredentials($username, $password): bool{
+    public function isValidCredentials($username, $password): bool
+    {
         return $this->userRepository->isValidCredentials($username, $password);
+    }
+
+    public function getUserId(string $username): int
+    {
+        return $this->userRepository->getUserId($username);
     }
 }

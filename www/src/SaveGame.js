@@ -50,28 +50,45 @@ export const getSaveName = () => `${CurrentDate.date()} ${CurrentDate.time()}`;
  * @param {Object} game - The game object to be saved.
  * @param {number} elapsedTime - The elapsed time of the game.
  */
-export function saveGame(saveName, game, elapsedTime) {
-    games.push({
-        name: saveName,
-        board: game,
-        elapsedTime: elapsedTime,
-    });
+export async function saveGame(saveName, game, elapsedTime) {
 
-    refreshCachedGames(games);
+    try {
+        const response = await fetch('saveGame.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                save_name: saveName,
+                elapsed_time: elapsedTime, // Send object as is
+                board: JSON.stringify(game),
+            }),
+        });
+
+        const result = await response.json();
+        if (result.status === 'success') {
+            console.log('Game saved successfully!');
+        } else {
+            console.error('Error saving game:', result.message);
+        }
+    } catch (error) {
+        console.error('Request failed:', error);
+    }
 }
+
 
 /**
  * Loads a game from localStorage based on the URL search parameter.
  *
  * @returns {Object|null} The loaded game object or null if not found.
  */
-export function loadGame() {
+export async function loadGame() {
     let id = searchParams.get("id");
-    if (!id || isNaN(id) || id < 1 || id > games.length) {
+    if (!id || isNaN(id) || id < 1) {
         return null;
     }
 
-    id--;
+    /*id--;
     let gameData = games[id].board;
     let game = {
         board: new Minesweeper(gameData.size),
@@ -81,9 +98,36 @@ export function loadGame() {
 
     game.board.fields = gameData.fields.map((row) =>
         row.map((fieldData) => Object.assign(new Field(), fieldData))
-    );
+    );*/
 
-    return game;
+    try {
+        const response = await fetch(`load.php?id=${id}`);
+        if (!response.ok) {
+            return null;
+        }
+
+        const gameData = await response.json();
+
+        if (!gameData || !gameData.board_data) {
+            return null; // Redirect to new game if no data or board is found
+        }
+
+        let game = {
+            board: new Minesweeper(gameData.board_data.size),
+            elapsedTime: gameData.elapsed_time,
+        };
+
+        Object.assign(game.board, gameData.board_data);
+
+        game.board.fields = gameData.board_data.fields.map((row) =>
+            row.map((fieldData) => Object.assign(new Field(), fieldData))
+        );
+
+        return game;
+    } catch (error) {
+        console.error("Error loading game:", error);
+        return null;
+    }
 }
 
 /**
