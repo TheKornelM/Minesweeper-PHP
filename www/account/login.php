@@ -1,5 +1,11 @@
 ﻿<?php
 include '../../db_connection.php';
+include "../../src/Managers/UserManager.php";
+include "../../src/Repository/Interfaces/UserRepositoryInterface.php";
+include "../../src/Repository/PostgreRepositories/UserRepository.php";
+
+use Repository\PostgreRepositories\UserRepository;
+use Managers\UserManager;
 
 $message = "";
 $toastClass = "";
@@ -8,31 +14,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
+    $repository = new UserRepository($conn);
+    $manager = new UserManager($repository);
+
     try {
-        // Prepare and execute
-        $stmt = $conn->prepare("SELECT password FROM userdata WHERE email = :email");
-        $stmt->bindParam(':email', $email);
-        $stmt->execute();
-
-        if ($stmt->rowCount() > 0) {
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $db_password = $row['password'];
-
-            if ($password === $db_password) {
-                $message = "Login successful";
-                $toastClass = "bg-success";
-                // Start the session and redirect to the dashboard or home page
-                session_start();
-                $_SESSION['email'] = $email;
-                header("Location: dashboard.php");
-                exit();
-            } else {
-                $message = "Incorrect password";
-                $toastClass = "bg-danger";
-            }
+        if ($manager->isValidCredentials($email, $password)) {
+            $message = "Login successful";
+            $toastClass = "bg-success";
+            // Start the session and redirect to the dashboard or home page
+            session_start();
+            $_SESSION['email'] = $email;
+            header("Location: dashboard.php");
+            exit();
         } else {
-            $message = "Email not found";
-            $toastClass = "bg-warning";
+            $message = "Incorrect credentials!";
+            $toastClass = "bg-danger";
         }
     } catch (PDOException $e) {
         $message = "Connection failed: " . $e->getMessage();

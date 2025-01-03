@@ -1,5 +1,11 @@
 ﻿<?php
 include '../../db_connection.php';
+include "../../src/Managers/UserManager.php";
+include "../../src/Repository/Interfaces/UserRepositoryInterface.php";
+include "../../src/Repository/PostgreRepositories/UserRepository.php";
+
+use Repository\PostgreRepositories\UserRepository;
+use Managers\UserManager;
 
 $message = "";
 $toastClass = "";
@@ -10,33 +16,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
 
     try {
-        // Check if email already exists
-        $checkEmailStmt = $conn->prepare("SELECT email FROM userdata WHERE email = :email");
-        $checkEmailStmt->bindParam(':email', $email);
-        $checkEmailStmt->execute();
 
-        $checkUsername = $conn->prepare("SELECT username FROM userdata WHERE username = :username");
-        $checkUsername->bindParam(':username', $username);
-        $checkUsername->execute();
+        $repository = new UserRepository($conn);
+        $manager = new UserManager($repository);
 
-        if ($checkEmailStmt->rowCount() > 0) {
+        if ($manager->EmailExists($email)) {
             $message = "Email already exists";
             $toastClass = "#007bff"; // Primary color
-        } else if($checkUsername->rowCount() > 0) {
+        } else if($manager->UsernameExists($username)) {
             $message = "Username already exists";
             $toastClass = "#007bff";
         } else {
-            // Prepare and bind
-            $stmt = $conn->prepare("INSERT INTO userdata (username, email, password) VALUES (:username, :email, :password)");
-            $stmt->bindParam(':username', $username);
-            $stmt->bindParam(':email', $email);
-            $stmt->bindParam(':password', $password);
-
-            if ($stmt->execute()) {
+            if ($manager->registerUser($username, $email, $password)) {
                 $message = "Account created successfully";
                 $toastClass = "#28a745"; // Success color
             } else {
-                $message = "Error: " . $stmt->errorInfo()[2];
+                $message = "Error during registration!";
                 $toastClass = "#dc3545"; // Danger color
             }
         }
