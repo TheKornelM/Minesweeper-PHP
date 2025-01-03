@@ -33,9 +33,11 @@ class UserRepository implements UserRepositoryInterface
      */
     public function isValidCredentials(string $email, string $password): bool
     {
+        $normalizedEmail = strtolower($email);
+
         $query = "SELECT password FROM userdata WHERE email = :email";
         $statement = $this->databaseConnection->prepare($query);
-        $statement->bindParam(':email', $email);
+        $statement->bindParam(':email', $normalizedEmail);
         $statement->execute();
 
         if ($statement->rowCount() === 0) {
@@ -58,11 +60,15 @@ class UserRepository implements UserRepositoryInterface
      */
     public function registerUser(string $username, string $email, string $password): bool
     {
-        $query = "INSERT INTO userdata (username, email, password) VALUES (:username, :email, :password)";
+        $normalizedUsername = strtolower($username);
+        $normalizedEmail = strtolower($email);
+
+        $query = "INSERT INTO userdata (username, email, password, normalized_username) VALUES (:username, :email, :password, :normalized_username)";
         $statement = $this->databaseConnection->prepare($query);
         $statement->bindParam(':username', $username);
-        $statement->bindParam(':email', $email);
+        $statement->bindParam(':email', $normalizedEmail);
         $statement->bindParam(':password', $password);
+        $statement->bindParam(':normalized_username', $normalizedUsername);
 
         return $statement->execute();
     }
@@ -75,9 +81,11 @@ class UserRepository implements UserRepositoryInterface
      */
     public function emailExists(string $email): bool
     {
+        $normalizedEmail = strtolower($email);
+
         $query = "SELECT email FROM userdata WHERE email = :email";
         $statement = $this->databaseConnection->prepare($query);
-        $statement->bindParam(':email', $email);
+        $statement->bindParam(':email', $normalizedEmail);
         $statement->execute();
 
         return $statement->rowCount() > 0;
@@ -91,9 +99,11 @@ class UserRepository implements UserRepositoryInterface
      */
     public function usernameExists(string $username): bool
     {
-        $query = "SELECT username FROM userdata WHERE username = :username";
+        $normalizedUsername = strtolower($username);
+
+        $query = "SELECT normalized_username FROM userdata WHERE normalized_username = :username";
         $statement = $this->databaseConnection->prepare($query);
-        $statement->bindParam(':username', $username);
+        $statement->bindParam(':username', $normalizedUsername);
         $statement->execute();
 
         return $statement->rowCount() > 0;

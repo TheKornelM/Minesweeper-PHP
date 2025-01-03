@@ -3,9 +3,12 @@ include '../../db_connection.php';
 include "../../src/Managers/UserManager.php";
 include "../../src/Repository/Interfaces/UserRepositoryInterface.php";
 include "../../src/Repository/PostgreRepositories/UserRepository.php";
+include "../../src/Validators/ValidationResult.php";
+include "../../src/Validators/UsernameValidator.php";
 
 use Repository\PostgreRepositories\UserRepository;
 use Managers\UserManager;
+use Validators\UsernameValidator;
 
 $message = "";
 $toastClass = "";
@@ -15,12 +18,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
+    $validator = new UsernameValidator();
+    $validationResult = $validator->validate($username);
+
     try {
 
         $repository = new UserRepository($conn);
         $manager = new UserManager($repository);
 
-        if ($manager->EmailExists($email)) {
+        if (!$validationResult->isValid) {
+            $message = implode("\n", $validationResult->errors);
+            $toastClass = "#007bff";
+        }
+        else if ($manager->EmailExists($email)) {
             $message = "Email already exists";
             $toastClass = "#007bff"; // Primary color
         } else if($manager->UsernameExists($username)) {

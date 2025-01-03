@@ -1,7 +1,10 @@
 CREATE TABLE userdata (
   id SERIAL PRIMARY KEY,
-  username VARCHAR(45) NOT NULL,
-  email VARCHAR(45) NOT NULL,
-  password VARCHAR(45) NOT NULL,
-  UNIQUE (id)
-);
+  username VARCHAR(128) NOT NULL,
+  normalized_username VARCHAR(128) NOT NULL,
+  email VARCHAR(128) NOT NULL,
+  password VARCHAR(512) NOT NULL,
+  UNIQUE (username),
+  UNIQUE (email),
+  UNIQUE (normalized_username)
+  );
