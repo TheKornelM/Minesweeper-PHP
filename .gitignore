@@ -437,7 +437,7 @@ config.codekit3
 ##### Gradle
 .gradle
 **/build/
-!src/**/build/
+!www/src/**/build/
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -472,3 +472,4 @@ composer.lock
 *.css.map
 *.sass.map
 *.scss.map
+env.php
