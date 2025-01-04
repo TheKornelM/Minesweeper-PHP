@@ -2,11 +2,11 @@
 
 namespace Validators;
 
-use Validators\ValidationResult;
+use Validators\Result;
 
 class PasswordValidator
 {
-    public static function validate(string $password): ValidationResult
+    public static function validate(string $password): Result
     {
         $errors = [];
 
@@ -17,9 +17,9 @@ class PasswordValidator
 
         // Return the result object
         if (empty($errors)) {
-            return new ValidationResult(true);
+            return new Result(true);
         } else {
-            return new ValidationResult(false, $errors);
+            return new Result(false, $errors);
         }
     }
 }

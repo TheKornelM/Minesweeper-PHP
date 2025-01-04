@@ -2,13 +2,13 @@
 
 namespace Validators;
 
-use Validators\ValidationResult;
+use Validators\Result;
 
 define("MAX_EMAIL_LENGTH", 128);
 
 class EmailValidator
 {
-    public static function validate(string $email): ValidationResult
+    public static function validate(string $email): Result
     {
         $errors = [];
 
@@ -29,9 +29,9 @@ class EmailValidator
 
         // Return the result object
         if (empty($errors)) {
-            return new ValidationResult(true);
+            return new Result(true);
         } else {
-            return new ValidationResult(false, $errors);
+            return new Result(false, $errors);
         }
     }
 }

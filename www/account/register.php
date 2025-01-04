@@ -3,7 +3,7 @@ include '../../db_connection.php';
 include "../../src/Managers/UserManager.php";
 include "../../src/Repository/Interfaces/UserRepositoryInterface.php";
 include "../../src/Repository/PostgreRepositories/UserRepository.php";
-include "../../src/Validators/ValidationResult.php";
+include "../../src/Validators/Result.php";
 include "../../src/Validators/UserDataValidator.php";
 
 use Repository\PostgreRepositories\UserRepository;
@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $repository = new UserRepository($conn);
         $manager = new UserManager($repository);
 
-        if (!$validationResult->isValid) {
+        if (!$validationResult->isSuccess) {
             $message = implode("<br>", $validationResult->errors);
             $toastClass = "#007bff";
         }
