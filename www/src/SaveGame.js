@@ -88,18 +88,6 @@ export async function loadGame() {
         return null;
     }
 
-    /*id--;
-    let gameData = games[id].board;
-    let game = {
-        board: new Minesweeper(gameData.size),
-        elapsedTime: games[id].elapsedTime,
-    };
-    Object.assign(game.board, gameData);
-
-    game.board.fields = gameData.fields.map((row) =>
-        row.map((fieldData) => Object.assign(new Field(), fieldData))
-    );*/
-
     try {
         const response = await fetch(`load.php?id=${id}`);
         if (!response.ok) {

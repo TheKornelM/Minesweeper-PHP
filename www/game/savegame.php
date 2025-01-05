@@ -1,12 +1,20 @@
 <?php
 
-use Repository\PostgreRepositories\UserRepository;
-use Managers\UserManager;
-
-include  '../../db_connection.php'; // Include your DB connection setup
+include "../../src/DTOs/ShowSavesDto.php";
+include  '../../db_connection.php';
 include "../../src/Managers/UserManager.php";
 include "../../src/Repository/Interfaces/UserRepositoryInterface.php";
 include "../../src/Repository/PostgreRepositories/UserRepository.php";
+include "../../src/Repository/Interfaces/SaveRepositoryInterface.php";
+include "../../src/Repository/PostgreRepositories/SaveRepository.php";
+include "../../src/Managers/SaveManager.php";
+include "../../src/Utils/SetHeader.php";
+
+use Repository\PostgreRepositories\UserRepository;
+use Managers\UserManager;
+use Repository\PostgreRepositories\SaveRepository;
+use Managers\SaveManager;
+use Utils\SetHeader;
 
 // Check if the necessary data is provided
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -84,4 +92,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(['status' => 'error', 'message' => 'Failed to save game metadata.']);
     }
 
+} else if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if(!isAuthenticated()){
+        http_response_code(404);
+        return;
+    }
+
+    $userId = getUserId($conn);
+
+    $saveRepository = new SaveRepository($conn);
+    $saveManager = new SaveManager($saveRepository);
+
+    SetHeader::ToJson();
+    echo json_encode($saveManager->showSaves($userId));
+}
+
+function isAuthenticated(): bool
+{
+    session_start();
+    return isset($_SESSION['username']);
+}
+
+function getUserId(\PDO $conn): int
+{
+    $userRepo = new UserRepository($conn);
+    $userManager = new UserManager($userRepo);
+
+    return $userManager->getUserId($_SESSION['username']);
 }
