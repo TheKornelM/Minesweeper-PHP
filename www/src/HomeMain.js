@@ -5,10 +5,10 @@ import Field from "./Field.js";
 
 const BASE_DIRECTORY = "/www"
 
-const deleteSaves = () => {
-    SaveGame.deleteSaves();
+async function deleteSaves(){
+    await SaveGame.deleteSaves();
     printSaves();
-};
+}
 
 document.querySelector("#delete-saves").addEventListener("click", deleteSaves);
 

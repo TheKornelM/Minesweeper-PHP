@@ -34,7 +34,28 @@ const refreshCachedGames = (games) =>
 /**
  * Deletes all saved games from localStorage.
  */
-export const deleteSaves = () => localStorage.removeItem("savedGames");
+export async function deleteSaves()
+{
+    //localStorage.removeItem("savedGames");
+    try {
+        const response = await fetch('savegame.php', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ saveId: "*" })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to delete user saves');
+        }
+
+        return true;
+    } catch (error) {
+        console.error('Error:', error);
+        return false;
+    }
+}
 
 /**
  * Generates a save name based on the current date and time.

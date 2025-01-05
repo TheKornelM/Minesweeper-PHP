@@ -88,5 +88,41 @@ class SaveRepository implements SaveRepositoryInterface
         }
     }
 
+    public function deleteUserSaves(int $userId): Result
+    {
+        try {
+            // Begin transaction
+            $this->databaseConnection->beginTransaction();
+
+            // Delete from elapsed_times using a JOIN with games
+            $query = "
+            DELETE FROM elapsed_times
+            WHERE id IN (
+                SELECT elapsed_time_id
+                FROM games
+                WHERE user_id = :userId
+            )
+        ";
+
+            $statement = $this->databaseConnection->prepare($query);
+            $statement->bindParam(':userId', $userId, \PDO::PARAM_INT);
+            $statement->execute();
+
+            // Delete from games
+            $query = "DELETE FROM games WHERE user_id = :userId";
+            $statement = $this->databaseConnection->prepare($query);
+            $statement->bindParam(':userId', $userId, \PDO::PARAM_INT);
+            $statement->execute();
+
+            // Commit transaction
+            $this->databaseConnection->commit();
+            return new Result(true);
+        } catch (\PDOException $e) {
+            // Rollback transaction in case of error
+            $this->databaseConnection->rollBack();
+            return new Result(false, ["Database error: " . $e->getMessage()]);
+        }
+    }
+
 
 }

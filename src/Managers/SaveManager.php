@@ -35,4 +35,9 @@ class SaveManager
 
         return $this->saveRepository->deleteSaveById($saveId);
     }
+
+    public function deleteUserSaves(int $userId): Result
+    {
+        return $this->saveRepository->deleteUserSaves($userId);
+    }
 }

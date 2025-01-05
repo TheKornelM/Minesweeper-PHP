@@ -16,5 +16,6 @@ interface SaveRepositoryInterface
     public function getSaveIdsWithNames(int $userId): array;
     public function deleteSaveById(int $saveId): Result;
     public function getSaveData(int $saveId);
+    public function deleteUserSaves(int $userId): Result;
 
 }

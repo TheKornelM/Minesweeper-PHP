@@ -115,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true, JSON_NUMERIC_CHECK);
 
     if (!isset($data['saveId'])) {
-        http_response_code(400); // Bad Request
+        http_response_code(400);
         echo json_encode(['error' => 'saveId is required']);
         return;
     }
@@ -125,6 +125,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $saveRepository = new SaveRepository($conn);
     $saveManager = new SaveManager($saveRepository);
+
+    // Delete all saves if saveId equals to "*"
+    if($saveId == "*"){
+        echo json_encode($saveManager->deleteUserSaves($userId));
+        return;
+    }
 
     echo json_encode($saveManager->deleteSave($userId, $saveId));
 }
