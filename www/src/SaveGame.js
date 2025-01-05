@@ -152,13 +152,23 @@ export function newGame() {
  *
  * @param {number} id - The ID of the save to be deleted.
  */
-export function deleteSave(id) {
-    let games = parseGames();
-    games.splice(id, 1);
+export async function deleteSave(id) {
+    try {
+        const response = await fetch('savegame.php', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ saveId: id })
+        });
 
-    if (games.length === 0) {
-        deleteSaves();
-    } else {
-        refreshCachedGames(games);
+        if (!response.ok) {
+            throw new Error('Failed to delete save');
+        }
+
+        return true;
+    } catch (error) {
+        console.error('Error:', error);
+        return false;
     }
 }

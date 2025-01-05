@@ -2,6 +2,8 @@
 
 namespace Repository\Interfaces;
 
+use Validators\Result;
+
 interface SaveRepositoryInterface
 {
 
@@ -12,4 +14,7 @@ interface SaveRepositoryInterface
      * @return array User saves (ShowSavesDto)
      */
     public function getSaveIdsWithNames(int $userId): array;
+    public function deleteSaveById(int $saveId): Result;
+    public function getSaveData(int $saveId);
+
 }

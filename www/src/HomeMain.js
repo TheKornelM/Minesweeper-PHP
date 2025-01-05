@@ -20,8 +20,6 @@ async function printSaves() {
     clearSavesContainer();
     const games = await getSavedGames();
 
-    console.log(games);
-
     if (!games) {
         redirectToNewGame();
         return;
@@ -88,8 +86,8 @@ function createDeleteDiv(index) {
     const deleteDiv = document.createElement("div");
     deleteDiv.className = "col-md-6";
 
-    /*const deleteButton = createDeleteButton(index);
-    deleteDiv.append(deleteButton);*/
+    const deleteButton = createDeleteButton(index);
+    deleteDiv.append(deleteButton);
 
     return deleteDiv;
 }
@@ -104,11 +102,12 @@ function createDeleteButton(index) {
     return deleteButton;
 }
 
-function attachDeleteButtonHandlers() {
+async function attachDeleteButtonHandlers() {
     document.querySelectorAll(".delete-button").forEach((elem) => {
-        elem.addEventListener("click", (event) => {
-            SaveGame.deleteSave(event.target.id);
-            printSaves();
+        elem.addEventListener("click", async (event) => {
+            if(await SaveGame.deleteSave(event.target.id)){
+                await printSaves();
+            }
         });
     });
 }

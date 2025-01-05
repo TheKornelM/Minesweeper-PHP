@@ -4,6 +4,7 @@ namespace Repository\PostgreRepositories;
 
 use Repository\Interfaces\SaveRepositoryInterface;
 use DTOs\ShowSavesDto;
+use Validators\Result;
 
 class SaveRepository implements SaveRepositoryInterface
 {
@@ -40,4 +41,52 @@ class SaveRepository implements SaveRepositoryInterface
 
         return $saves;
     }
+
+    public function getSaveData(int $saveId)
+    {
+        $query = "SELECT * FROM games WHERE id = :id";
+        $statement = $this->databaseConnection->prepare($query);
+        $statement->bindParam(':id', $saveId);
+        $statement->execute();
+
+        // Fetch results as associative arrays
+        $result = $statement->fetch(\PDO::FETCH_ASSOC);
+
+        return $result;
+    }
+
+    /**
+     * Deletes a save by its ID and returns the result.
+     *
+     * @param int $saveId The ID of the save to delete.
+     * @return Result The result of the deletion process.
+     */
+    public function deleteSaveById(int $saveId): Result {
+        try {
+            // Begin transaction
+            $this->databaseConnection->beginTransaction();
+
+            // Delete from elapsed_times first
+            $query = "DELETE FROM elapsed_times WHERE id = :id";
+            $statement = $this->databaseConnection->prepare($query);
+            $statement->bindParam(':id', $elapsedTimeId, \PDO::PARAM_INT);
+            $statement->execute();
+
+            // Delete from games
+            $query = "DELETE FROM games WHERE id = :id";
+            $statement = $this->databaseConnection->prepare($query);
+            $statement->bindParam(':id', $saveId, \PDO::PARAM_INT);
+            $statement->execute();
+
+            // Commit transaction
+            $this->databaseConnection->commit();
+            return new Result(true);
+        } catch (\PDOException $e) {
+            // Rollback transaction in case of error
+            $this->databaseConnection->rollBack();
+            return new Result(false, ["Database error: " . $e->getMessage()]);
+        }
+    }
+
+
 }

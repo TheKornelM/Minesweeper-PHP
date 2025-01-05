@@ -1,6 +1,7 @@
 <?php
 
 include "../../src/DTOs/ShowSavesDto.php";
+include "../../src/Validators/Result.php";
 include  '../../db_connection.php';
 include "../../src/Managers/UserManager.php";
 include "../../src/Repository/Interfaces/UserRepositoryInterface.php";
@@ -105,6 +106,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     SetHeader::ToJson();
     echo json_encode($saveManager->showSaves($userId));
+} else if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+    if (!isAuthenticated()) {
+        http_response_code(404);
+        return;
+    }
+
+    $data = json_decode(file_get_contents('php://input'), true, JSON_NUMERIC_CHECK);
+
+    if (!isset($data['saveId'])) {
+        http_response_code(400); // Bad Request
+        echo json_encode(['error' => 'saveId is required']);
+        return;
+    }
+
+    $saveId = $data['saveId'];
+    $userId = getUserId($conn);
+
+    $saveRepository = new SaveRepository($conn);
+    $saveManager = new SaveManager($saveRepository);
+
+    echo json_encode($saveManager->deleteSave($userId, $saveId));
 }
 
 function isAuthenticated(): bool
