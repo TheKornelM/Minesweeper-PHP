@@ -14,6 +14,12 @@ class SaveManager
         $this->saveRepository = $saveRepository;
     }
 
+    /**
+     * Show basic saves data in array of ShowSavesDto objects.
+     *
+     * @param int $userId Given user ID
+     * @return array User saves (ShowSavesDto)
+     */
     public function showSaves(int $userId): array
     {
         return $this->saveRepository->getSaveIdsWithNames($userId);
