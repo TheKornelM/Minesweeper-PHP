@@ -14,7 +14,7 @@ class SaveRepository implements SaveRepositoryInterface
     private $databaseConnection;
 
     /**
-     * Constructor to initialize the UserRepository with a PDO connection.
+     * Constructor to initialize the SaveRepository with a PDO connection.
      *
      * @param \PDO $databaseConnection The PDO database connection instance.
      */
@@ -23,6 +23,12 @@ class SaveRepository implements SaveRepositoryInterface
         $this->databaseConnection = $databaseConnection;
     }
 
+    /**
+     * Retrieves save IDs and names for a given user.
+     *
+     * @param int $userId The ID of the user.
+     * @return ShowSavesDto[] An array of ShowSavesDto objects.
+     */
     public function getSaveIdsWithNames(int $userId): array
     {
         $query = "SELECT id, save_name FROM games WHERE user_id = :userId";
@@ -30,10 +36,8 @@ class SaveRepository implements SaveRepositoryInterface
         $statement->bindParam(':userId', $userId);
         $statement->execute();
 
-        // Fetch results as associative arrays
+        // Fetch results and map them to DTO objects
         $results = $statement->fetchAll(\PDO::FETCH_ASSOC);
-
-        // Map results to ShowSavesDto objects
         $saves = [];
         foreach ($results as $row) {
             $saves[] = new ShowSavesDto((int)$row['id'], $row['save_name']);
@@ -42,6 +46,12 @@ class SaveRepository implements SaveRepositoryInterface
         return $saves;
     }
 
+    /**
+     * Retrieves all save data for a specific save ID.
+     *
+     * @param int $saveId The ID of the save.
+     * @return array|null The save data or null if not found.
+     */
     public function getSaveData(int $saveId)
     {
         $query = "SELECT * FROM games WHERE id = :id";
@@ -49,126 +59,146 @@ class SaveRepository implements SaveRepositoryInterface
         $statement->bindParam(':id', $saveId);
         $statement->execute();
 
-        // Fetch results as associative arrays
-        $result = $statement->fetch(\PDO::FETCH_ASSOC);
-
-        return $result;
+        return $statement->fetch(\PDO::FETCH_ASSOC);
     }
 
-    public function createSave(int $userId, string $saveName, $boardState, $elapsedTime) : Result
+    /**
+     * Creates a new save for a user, including board state and elapsed time.
+     *
+     * @param int $userId The ID of the user.
+     * @param string $saveName The name of the save.
+     * @param string $boardState The board state in JSON format.
+     * @param array $elapsedTime An associative array containing elapsed time details.
+     * @return Result The result of the save operation.
+     */
+    public function createSave(int $userId, string $saveName, $boardState, $elapsedTime): Result
     {
-        // Generate a unique filename for the board JSON
         $fileName = uniqid('board_', true) . '.json';
         $baseDir = dirname(__DIR__, 3);
         $filePath = $baseDir . '/data/boards/' . $fileName;
 
-        // Save the board state as a JSON file
-        if (file_put_contents($filePath, $boardState) === false)
-        {
+        if (file_put_contents($filePath, $boardState) === false) {
             return new Result(false, ['Failed to save board state.']);
         }
 
-        // Insert elapsed time
         $sql = 'INSERT INTO elapsed_times (hour, minute, second, count) VALUES (?, ?, ?, ?)';
         $stmt = $this->databaseConnection->prepare($sql);
-        $elapsedTimeData = [$elapsedTime['hour'], $elapsedTime['minute'], $elapsedTime['second'], $elapsedTime['count']];
-        $stmt->execute($elapsedTimeData);
+        $stmt->execute([$elapsedTime['hour'], $elapsedTime['minute'], $elapsedTime['second'], $elapsedTime['count']]);
         $elapsedTimeId = $this->databaseConnection->lastInsertId();
 
-        // Insert game metadata
         $sql = 'INSERT INTO games (user_id, save_name, elapsed_time_id, board_file_name) VALUES (?, ?, ?, ?)';
         $stmt = $this->databaseConnection->prepare($sql);
 
-        if ($stmt->execute([$userId, $saveName, $elapsedTimeId, $fileName]))
-        {
+        if ($stmt->execute([$userId, $saveName, $elapsedTimeId, $fileName])) {
             return new Result(true);
-        }
-        else
-        {
-            // Rollback if DB operation fails
+        } else {
+            $this->deleteFile($filePath);
+
             $query = "DELETE FROM elapsed_times WHERE id = :id";
             $statement = $this->databaseConnection->prepare($query);
-            $statement->bindParam(':id', $elapsedTimeId, PDO::PARAM_INT);
+            $statement->bindParam(':id', $elapsedTimeId, \PDO::PARAM_INT);
             $statement->execute();
-
-            // Safely delete the file
-            if (file_exists($filePath))
-            {
-                unlink($filePath);
-            }
 
             return new Result(false, ['Failed to save game metadata.']);
         }
     }
 
     /**
-     * Deletes a save by its ID and returns the result.
+     * Deletes a save by its ID, including associated elapsed time and JSON file.
      *
      * @param int $saveId The ID of the save to delete.
      * @return Result The result of the deletion process.
      */
-    public function deleteSaveById(int $saveId): Result {
+    public function deleteSaveById(int $saveId): Result
+    {
         try {
-            // Begin transaction
             $this->databaseConnection->beginTransaction();
 
-            // Delete from elapsed_times first
+            $gameData = $this->getSaveData($saveId);
+            if (!$gameData) {
+                return new Result(false, ['Save not found.']);
+            }
+
+            $elapsedTimeId = $gameData['elapsed_time_id'];
+            $fileName = $gameData['board_file_name'];
+            $filePath = dirname(__DIR__, 3) . '/data/boards/' . $fileName;
+
             $query = "DELETE FROM elapsed_times WHERE id = :id";
             $statement = $this->databaseConnection->prepare($query);
             $statement->bindParam(':id', $elapsedTimeId, \PDO::PARAM_INT);
             $statement->execute();
 
-            // Delete from games
             $query = "DELETE FROM games WHERE id = :id";
             $statement = $this->databaseConnection->prepare($query);
             $statement->bindParam(':id', $saveId, \PDO::PARAM_INT);
             $statement->execute();
 
-            // Commit transaction
             $this->databaseConnection->commit();
+            $this->deleteFile($filePath);
+
             return new Result(true);
         } catch (\PDOException $e) {
-            // Rollback transaction in case of error
             $this->databaseConnection->rollBack();
             return new Result(false, ["Database error: " . $e->getMessage()]);
         }
     }
 
+    /**
+     * Deletes all saves for a user, including associated elapsed times and JSON files.
+     *
+     * @param int $userId The ID of the user whose saves are to be deleted.
+     * @return Result The result of the deletion process.
+     */
     public function deleteUserSaves(int $userId): Result
     {
         try {
-            // Begin transaction
             $this->databaseConnection->beginTransaction();
 
-            // Delete from elapsed_times using a JOIN with games
+            $query = "SELECT id, board_file_name FROM games WHERE user_id = :userId";
+            $statement = $this->databaseConnection->prepare($query);
+            $statement->bindParam(':userId', $userId, \PDO::PARAM_INT);
+            $statement->execute();
+            $games = $statement->fetchAll(\PDO::FETCH_ASSOC);
+
             $query = "
-            DELETE FROM elapsed_times
-            WHERE id IN (
-                SELECT elapsed_time_id
-                FROM games
-                WHERE user_id = :userId
-            )
-        ";
+                DELETE FROM elapsed_times
+                WHERE id IN (
+                    SELECT elapsed_time_id FROM games WHERE user_id = :userId
+                )
+            ";
 
             $statement = $this->databaseConnection->prepare($query);
             $statement->bindParam(':userId', $userId, \PDO::PARAM_INT);
             $statement->execute();
 
-            // Delete from games
             $query = "DELETE FROM games WHERE user_id = :userId";
             $statement = $this->databaseConnection->prepare($query);
             $statement->bindParam(':userId', $userId, \PDO::PARAM_INT);
             $statement->execute();
 
-            // Commit transaction
             $this->databaseConnection->commit();
+
+            foreach ($games as $game) {
+                $filePath = dirname(__DIR__, 3) . '/data/boards/' . $game['board_file_name'];
+                $this->deleteFile($filePath);
+            }
+
             return new Result(true);
         } catch (\PDOException $e) {
-            // Rollback transaction in case of error
             $this->databaseConnection->rollBack();
             return new Result(false, ["Database error: " . $e->getMessage()]);
         }
     }
 
-
+    /**
+     * Safely deletes a file from the filesystem.
+     *
+     * @param string $filePath The path to the file to delete.
+     */
+    private function deleteFile(string $filePath)
+    {
+        if (file_exists($filePath)) {
+            unlink($filePath);
+        }
+    }
 }
