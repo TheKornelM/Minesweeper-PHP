@@ -120,4 +120,15 @@ class UserRepository implements UserRepositoryInterface
 
         return $userRecord['id'];
     }
+
+    public function userIdExists(int $userId): bool
+    {
+        $query = "SELECT id FROM userdata WHERE id = :id";
+        $statement = $this->databaseConnection->prepare($query);
+        $statement->bindParam(':id', $userId);
+        $statement->execute();
+
+        return $statement->rowCount() > 0;
+    }
+
 }

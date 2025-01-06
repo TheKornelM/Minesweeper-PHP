@@ -474,3 +474,4 @@ composer.lock
 *.scss.map
 env.php
 /www/game/boards
+/data

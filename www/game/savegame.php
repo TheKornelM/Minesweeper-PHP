@@ -10,12 +10,12 @@ include "../../src/Repository/Interfaces/SaveRepositoryInterface.php";
 include "../../src/Repository/PostgreRepositories/SaveRepository.php";
 include "../../src/Managers/SaveManager.php";
 include "../../src/Utils/SetHeader.php";
+include "../../src/Utils/SaveManagerFactory.php";
 
 use Repository\PostgreRepositories\UserRepository;
 use Managers\UserManager;
-use Repository\PostgreRepositories\SaveRepository;
-use Managers\SaveManager;
 use Utils\SetHeader;
+use Utils\SaveManagerFactory;
 
 // Check if the necessary data is provided
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -46,60 +46,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $elapsedTime = $data['elapsed_time'] ?? null;
     $boardState = $data['board'] ?? null;
 
-    if (!$saveName || !$elapsedTime || !$boardState) {
+    if (!$userId || !$saveName || !$elapsedTime || !$boardState) {
         http_response_code(400);
         echo json_encode(["error" => "Missing required fields"]);
         exit;
     }
 
-    // Example: Access specific elapsed time values
-    $hour = $elapsedTime['hour'] ?? 0;
-    $minute = $elapsedTime['minute'] ?? 0;
-    $second = $elapsedTime['second'] ?? 0;
-
-    // Validate input
-    if (!$userId || !$saveName || !$elapsedTime || !$boardState) {
-        echo json_encode(['status' => 'error', 'message' => 'Invalid input.']);
-        exit;
-    }
-
-    // Generate a unique filename for the board JSON
-    $fileName = uniqid('board_', true) . '.json';
-    $filePath = __DIR__ . '/boards/' . $fileName;
-
-    // Save the board state as a JSON file
-    if (file_put_contents($filePath, $boardState) === false) {
-        echo json_encode(['status' => 'error', 'message' => 'Failed to save board state.']);
-        exit;
-    }
-
-    // Insert elapsed time
-    $sql = 'INSERT INTO elapsed_times (hour, minute, second, count) VALUES (?, ?, ?, ?)';
-    $stmt = $conn->prepare($sql);
-    $elapsedTimeData = [$elapsedTime['hour'], $elapsedTime['minute'], $elapsedTime['second'], $elapsedTime['count']];
-    $stmt->execute($elapsedTimeData);
-    $elapsedTimeId = $conn->lastInsertId();
-
-    // Insert game metadata
-    $sql = 'INSERT INTO games (user_id, save_name, elapsed_time_id, board_file_name) VALUES (?, ?, ?, ?)';
-    $stmt = $conn->prepare($sql);
-    if ($stmt->execute([$userId, $saveName, $elapsedTimeId, $fileName])) {
-        echo json_encode(['status' => 'success', 'message' => 'Game saved successfully.']);
-    } else {
-        // Rollback if DB operation fails
-        $query = "DELETE FROM elapsed_times WHERE id = :id";
-        $statement = $conn->prepare($query);
-        $statement->bindParam(':id', $elapsedTimeId, PDO::PARAM_INT);
-        $statement->execute();
-
-        // Safely delete the file
-        if (file_exists($filePath)) {
-            unlink($filePath);
-        }
-
-        echo json_encode(['status' => 'error', 'message' => 'Failed to save game metadata.']);
-    }
-
+    $saveManager = SaveManagerFactory::create($conn);
+    SetHeader::ToJson();
+    echo json_encode($saveManager->createSave($userId, $saveName, $boardState, $elapsedTime));
 } else if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if(!isAuthenticated()){
         http_response_code(404);
@@ -107,10 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $userId = getUserId($conn);
-
-    $saveRepository = new SaveRepository($conn);
-    $saveManager = new SaveManager($saveRepository);
-
+    $saveManager = SaveManagerFactory::create($conn);
     SetHeader::ToJson();
     echo json_encode($saveManager->showSaves($userId));
 } else if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
@@ -130,8 +82,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $saveId = $data['saveId'];
     $userId = getUserId($conn);
 
-    $saveRepository = new SaveRepository($conn);
-    $saveManager = new SaveManager($saveRepository);
+    $saveManager = SaveManagerFactory::create($conn);
+
+    SetHeader::ToJson();
 
     // Delete all saves if saveId equals to "*"
     if($saveId == "*"){
@@ -139,7 +92,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         return;
     }
 
-    echo json_encode($saveManager->deleteSave($userId, $saveId));
+    if(!is_int($saveId)){
+        http_response_code(400);
+        echo json_encode(['error' => 'Save id must be an integer']);
+        return;
+    }
+
+    echo json_encode($saveManager->deleteSave($userId, intval($saveId)));
 }
 
 function isAuthenticated(): bool

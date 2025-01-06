@@ -180,7 +180,7 @@ export async function deleteSave(id) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ saveId: id })
+            body: JSON.stringify({ saveId: parseInt(id) })
         });
 
         if (!response.ok) {

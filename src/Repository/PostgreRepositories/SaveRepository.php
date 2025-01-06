@@ -55,6 +55,52 @@ class SaveRepository implements SaveRepositoryInterface
         return $result;
     }
 
+    public function createSave(int $userId, string $saveName, $boardState, $elapsedTime) : Result
+    {
+        // Generate a unique filename for the board JSON
+        $fileName = uniqid('board_', true) . '.json';
+        $baseDir = dirname(__DIR__, 3);
+        $filePath = $baseDir . '/data/boards/' . $fileName;
+
+        // Save the board state as a JSON file
+        if (file_put_contents($filePath, $boardState) === false)
+        {
+            return new Result(false, ['Failed to save board state.']);
+        }
+
+        // Insert elapsed time
+        $sql = 'INSERT INTO elapsed_times (hour, minute, second, count) VALUES (?, ?, ?, ?)';
+        $stmt = $this->databaseConnection->prepare($sql);
+        $elapsedTimeData = [$elapsedTime['hour'], $elapsedTime['minute'], $elapsedTime['second'], $elapsedTime['count']];
+        $stmt->execute($elapsedTimeData);
+        $elapsedTimeId = $this->databaseConnection->lastInsertId();
+
+        // Insert game metadata
+        $sql = 'INSERT INTO games (user_id, save_name, elapsed_time_id, board_file_name) VALUES (?, ?, ?, ?)';
+        $stmt = $this->databaseConnection->prepare($sql);
+
+        if ($stmt->execute([$userId, $saveName, $elapsedTimeId, $fileName]))
+        {
+            return new Result(true);
+        }
+        else
+        {
+            // Rollback if DB operation fails
+            $query = "DELETE FROM elapsed_times WHERE id = :id";
+            $statement = $this->databaseConnection->prepare($query);
+            $statement->bindParam(':id', $elapsedTimeId, PDO::PARAM_INT);
+            $statement->execute();
+
+            // Safely delete the file
+            if (file_exists($filePath))
+            {
+                unlink($filePath);
+            }
+
+            return new Result(false, ['Failed to save game metadata.']);
+        }
+    }
+
     /**
      * Deletes a save by its ID and returns the result.
      *

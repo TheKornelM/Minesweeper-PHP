@@ -17,5 +17,6 @@ interface SaveRepositoryInterface
     public function deleteSaveById(int $saveId): Result;
     public function getSaveData(int $saveId);
     public function deleteUserSaves(int $userId): Result;
+    public function createSave(int $userId, string $saveName, $boardState, $elapsedTime) : Result;
 
 }

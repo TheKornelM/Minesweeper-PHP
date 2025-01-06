@@ -68,7 +68,9 @@ function loadGameFromDatabase($userId, $gameId) {
 
         if ($game) {
             // Read the board JSON file
-            $boardFilePath = "boards/" . $game["board_file_name"];
+            $baseDir = dirname(__DIR__, 2);
+            $boardFilePath = $baseDir . "/data/boards/" . $game["board_file_name"];
+
             if (file_exists($boardFilePath)) {
                 $game["board_data"] = json_decode(file_get_contents($boardFilePath), true);
             } else {
