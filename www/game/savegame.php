@@ -46,7 +46,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $elapsedTime = $data['elapsed_time'] ?? null;
     $boardState = $data['board'] ?? null;
 
-    // Debugging (optional)
     if (!$saveName || !$elapsedTime || !$boardState) {
         http_response_code(400);
         echo json_encode(["error" => "Missing required fields"]);
@@ -88,8 +87,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(['status' => 'success', 'message' => 'Game saved successfully.']);
     } else {
         // Rollback if DB operation fails
-        $conn->exec('DELETE FROM elapsed_times WHERE id = ' . $elapsedTimeId);
-        unlink($filePath);
+        $query = "DELETE FROM elapsed_times WHERE id = :id";
+        $statement = $conn->prepare($query);
+        $statement->bindParam(':id', $elapsedTimeId, PDO::PARAM_INT);
+        $statement->execute();
+
+        // Safely delete the file
+        if (file_exists($filePath)) {
+            unlink($filePath);
+        }
+
         echo json_encode(['status' => 'error', 'message' => 'Failed to save game metadata.']);
     }
 
