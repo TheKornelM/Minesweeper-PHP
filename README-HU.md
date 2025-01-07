@@ -3,10 +3,10 @@ Készítette: Makári Kornél Sándor, MQOD6Q
 
 ## Alapvető információk
 - Felület nyelve: angol
-- Kliens oldalon megvalósított program (JavaScript)
+- JavaScript és PHP backend
 - Reszponzív, így például telefonon is játszhatunk.
-- Dokumentáció: https://thekornelm.github.io/Minesweeper-JS/
-- Az alábbi oldalon játszható a játék: https://thekornel.web.elte.hu/Minesweeper
+- Dokumentáció: https://thekornelm.github.io/Minesweeper-PHP/
+- Az alábbi oldalon játszható a játék: https://thekornel.web.elte.hu/www
 
 ## Játékmenet
 A játék célja, hogy felfedjünk minden mezőt, ahol **nem** található akna.\
@@ -35,7 +35,6 @@ távolítjuk a zászlót.
 Amennyire olyan mezőre lépünk, ahol akna található, a játék véget ér. Ekkor felfedésre kerül az összes akna helye, illetve piros alapon megjelölésre kerülnek az aknát nem tartalmazó, zászlóval jelölt mezők.
 
 ## Fejlesztési tervek
-Az alábbi funkciók bevezetése van tervben szerveroldali megvalósítás esetén:
 - Pontszámok
 - XP rendszer
 - Rekordok tárolása
