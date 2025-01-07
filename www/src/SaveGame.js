@@ -9,22 +9,11 @@ import Field from "./Field.js";
 import Difficulty from "./Difficulty.js";
 import * as CurrentDate from "./CurrentDate.js";
 
-/**
- * Parses saved games from localStorage.
- *
- * @returns {Array} An array of saved games.
- */
-const parseGames = () => {
-    let games = JSON.parse(localStorage.getItem("savedGames"));
-    return !games ? [] : games;
-};
-
 const searchParams = new URLSearchParams(window.location.search);
-let games = parseGames();
 CurrentDate.setLocationCode("hu-HU");
 
 /**
- * Refreshes the cached games in localStorage.
+ * Refreshes games from the server.
  *
  * @param {Array} games - The array of games to be saved.
  */
@@ -32,7 +21,7 @@ const refreshCachedGames = (games) =>
     localStorage.setItem("savedGames", JSON.stringify(games));
 
 /**
- * Deletes all saved games from localStorage.
+ * Deletes all saved games by user from the server.
  */
 export async function deleteSaves()
 {
@@ -65,7 +54,7 @@ export async function deleteSaves()
 export const getSaveName = () => `${CurrentDate.date()} ${CurrentDate.time()}`;
 
 /**
- * Saves a game to localStorage.
+ * Saves a game to the server.
  *
  * @param {string} saveName - The name of the save.
  * @param {Object} game - The game object to be saved.
@@ -99,7 +88,7 @@ export async function saveGame(saveName, game, elapsedTime) {
 
 
 /**
- * Loads a game from localStorage based on the URL search parameter.
+ * Loads a game from the server based on the URL search parameter.
  *
  * @returns {Object|null} The loaded game object or null if not found.
  */
@@ -169,7 +158,7 @@ export function newGame() {
 }
 
 /**
- * Deletes a specific saved game from localStorage.
+ * Deletes a specific saved game from the server.
  *
  * @param {number} id - The ID of the save to be deleted.
  */

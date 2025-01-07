@@ -58,68 +58,6 @@
 
         
             
-<h4 class="name" id=".deleteSaves"><span class="type-signature">(static, constant) </span>deleteSaves<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    Deletes all saved games from localStorage.
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SaveGame.js.html">SaveGame.js</a>, <a href="SaveGame.js.html#line37">line 37</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
 <h4 class="name" id=".getSaveName"><span class="type-signature">(static, constant) </span>getSaveName<span class="type-signature"></span></h4>
 
 
@@ -164,7 +102,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SaveGame.js.html">SaveGame.js</a>, <a href="SaveGame.js.html#line44">line 44</a>
+        <a href="SaveGame.js.html">SaveGame.js</a>, <a href="SaveGame.js.html#line54">line 54</a>
     </li></ul></dd>
     
 
@@ -200,7 +138,7 @@
 
 
 <div class="description">
-    Deletes a specific saved game from localStorage.
+    Deletes a specific saved game from the server.
 </div>
 
 
@@ -293,7 +231,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SaveGame.js.html">SaveGame.js</a>, <a href="SaveGame.js.html#line123">line 123</a>
+        <a href="SaveGame.js.html">SaveGame.js</a>, <a href="SaveGame.js.html#line165">line 165</a>
     </li></ul></dd>
     
 
@@ -329,7 +267,7 @@
     
 
     
-    <h4 class="name" id=".loadGame"><span class="type-signature">(static) </span>loadGame<span class="signature">()</span><span class="type-signature"> &rarr; {Object|null}</span></h4>
+    <h4 class="name" id=".deleteSaves"><span class="type-signature">(static) </span>deleteSaves<span class="signature">()</span><span class="type-signature"></span></h4>
     
 
     
@@ -337,7 +275,7 @@
 
 
 <div class="description">
-    Loads a game from localStorage based on the URL search parameter.
+    Deletes all saved games by user from the server.
 </div>
 
 
@@ -381,7 +319,95 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SaveGame.js.html">SaveGame.js</a>, <a href="SaveGame.js.html#line68">line 68</a>
+        <a href="SaveGame.js.html">SaveGame.js</a>, <a href="SaveGame.js.html#line26">line 26</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".loadGame"><span class="type-signature">(static) </span>loadGame<span class="signature">()</span><span class="type-signature"> &rarr; {Object|null}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Loads a game from the server based on the URL search parameter.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="SaveGame.js.html">SaveGame.js</a>, <a href="SaveGame.js.html#line95">line 95</a>
     </li></ul></dd>
     
 
@@ -494,7 +520,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SaveGame.js.html">SaveGame.js</a>, <a href="SaveGame.js.html#line94">line 94</a>
+        <a href="SaveGame.js.html">SaveGame.js</a>, <a href="SaveGame.js.html#line136">line 136</a>
     </li></ul></dd>
     
 
@@ -563,7 +589,7 @@
 
 
 <div class="description">
-    Saves a game to localStorage.
+    Saves a game to the server.
 </div>
 
 
@@ -702,7 +728,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SaveGame.js.html">SaveGame.js</a>, <a href="SaveGame.js.html#line53">line 53</a>
+        <a href="SaveGame.js.html">SaveGame.js</a>, <a href="SaveGame.js.html#line63">line 63</a>
     </li></ul></dd>
     
 
@@ -727,116 +753,6 @@
 
 
 
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="~parseGames"><span class="type-signature">(inner) </span>parseGames<span class="signature">()</span><span class="type-signature"> &rarr; {Array}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Parses saved games from localStorage.
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SaveGame.js.html">SaveGame.js</a>, <a href="SaveGame.js.html#line17">line 17</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    An array of saved games.
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Array</span>
-
-
-    </dd>
-</dl>
-
-    
 
 
 
@@ -856,7 +772,7 @@
 
 
 <div class="description">
-    Refreshes the cached games in localStorage.
+    Refreshes games from the server.
 </div>
 
 
@@ -949,7 +865,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="SaveGame.js.html">SaveGame.js</a>, <a href="SaveGame.js.html#line31">line 31</a>
+        <a href="SaveGame.js.html">SaveGame.js</a>, <a href="SaveGame.js.html#line20">line 20</a>
     </li></ul></dd>
     
 
@@ -1001,7 +917,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Wed Nov 13 2024 23:17:21 GMT+0100 (közép-európai téli idő)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Jan 07 2025 15:35:27 GMT+0100 (közép-európai téli idő)
 </footer>
 
 <script> prettyPrint(); </script>
