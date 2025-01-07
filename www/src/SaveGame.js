@@ -75,12 +75,19 @@ export async function saveGame(saveName, game, elapsedTime) {
             }),
         });
 
-        const result = await response.json();
-        if (result.status === 'success') {
-            console.log('Game saved successfully!');
-        } else {
-            console.error('Error saving game:', result.message);
+        // Check response status
+        if (!response.ok) {
+            console.error('Failed to save game. HTTP status:', response.status);
+            return;
         }
+
+        const result = await response.json();
+
+        // Handle JSON response
+        if (result.error) {
+            console.error('Error saving game:', result.message || 'Unknown error');
+        }
+
     } catch (error) {
         console.error('Request failed:', error);
     }
