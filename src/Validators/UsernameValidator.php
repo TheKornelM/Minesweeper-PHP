@@ -2,13 +2,13 @@
 
 namespace Validators;
 
-use Validators\ValidationResult;
+use Validators\Result;
 
 define("MAX_USERNAME_LENGTH", 128);
 
 class UsernameValidator
 {
-    public static function validate(string $username): ValidationResult
+    public static function validate(string $username): Result
     {
         $errors = [];
 
@@ -29,9 +29,9 @@ class UsernameValidator
 
         // Return the result object
         if (empty($errors)) {
-            return new ValidationResult(true);
+            return new Result(true);
         } else {
-            return new ValidationResult(false, $errors);
+            return new Result(false, $errors);
         }
     }
 }

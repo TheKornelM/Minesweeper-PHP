@@ -34,7 +34,28 @@ const refreshCachedGames = (games) =>
 /**
  * Deletes all saved games from localStorage.
  */
-export const deleteSaves = () => localStorage.removeItem("savedGames");
+export async function deleteSaves()
+{
+    //localStorage.removeItem("savedGames");
+    try {
+        const response = await fetch('../api/games.php', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ saveId: "*" })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to delete user saves');
+        }
+
+        return true;
+    } catch (error) {
+        console.error('Error:', error);
+        return false;
+    }
+}
 
 /**
  * Generates a save name based on the current date and time.
@@ -50,40 +71,72 @@ export const getSaveName = () => `${CurrentDate.date()} ${CurrentDate.time()}`;
  * @param {Object} game - The game object to be saved.
  * @param {number} elapsedTime - The elapsed time of the game.
  */
-export function saveGame(saveName, game, elapsedTime) {
-    games.push({
-        name: saveName,
-        board: game,
-        elapsedTime: elapsedTime,
-    });
+export async function saveGame(saveName, game, elapsedTime) {
 
-    refreshCachedGames(games);
+    try {
+        const response = await fetch('../api/game.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                save_name: saveName,
+                elapsed_time: elapsedTime, // Send object as is
+                board: JSON.stringify(game),
+            }),
+        });
+
+        const result = await response.json();
+        if (result.status === 'success') {
+            console.log('Game saved successfully!');
+        } else {
+            console.error('Error saving game:', result.message);
+        }
+    } catch (error) {
+        console.error('Request failed:', error);
+    }
 }
+
 
 /**
  * Loads a game from localStorage based on the URL search parameter.
  *
  * @returns {Object|null} The loaded game object or null if not found.
  */
-export function loadGame() {
+export async function loadGame() {
     let id = searchParams.get("id");
-    if (!id || isNaN(id) || id < 1 || id > games.length) {
+    if (!id || isNaN(id) || id < 1) {
         return null;
     }
 
-    id--;
-    let gameData = games[id].board;
-    let game = {
-        board: new Minesweeper(gameData.size),
-        elapsedTime: games[id].elapsedTime,
-    };
-    Object.assign(game.board, gameData);
+    try {
+        const response = await fetch(`../api/game.php?id=${id}`);
+        if (!response.ok) {
+            return null;
+        }
 
-    game.board.fields = gameData.fields.map((row) =>
-        row.map((fieldData) => Object.assign(new Field(), fieldData))
-    );
+        const gameData = await response.json();
 
-    return game;
+        if (!gameData || !gameData.board_data) {
+            return null; // Redirect to new game if no data or board is found
+        }
+
+        let game = {
+            board: new Minesweeper(gameData.board_data.size),
+            elapsedTime: gameData.elapsed_time,
+        };
+
+        Object.assign(game.board, gameData.board_data);
+
+        game.board.fields = gameData.board_data.fields.map((row) =>
+            row.map((fieldData) => Object.assign(new Field(), fieldData))
+        );
+
+        return game;
+    } catch (error) {
+        console.error("Error loading game:", error);
+        return null;
+    }
 }
 
 /**
@@ -120,13 +173,23 @@ export function newGame() {
  *
  * @param {number} id - The ID of the save to be deleted.
  */
-export function deleteSave(id) {
-    let games = parseGames();
-    games.splice(id, 1);
+export async function deleteSave(id) {
+    try {
+        const response = await fetch('../api/game.php', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ saveId: parseInt(id) })
+        });
 
-    if (games.length === 0) {
-        deleteSaves();
-    } else {
-        refreshCachedGames(games);
+        if (!response.ok) {
+            throw new Error('Failed to delete save');
+        }
+
+        return true;
+    } catch (error) {
+        console.error('Error:', error);
+        return false;
     }
 }

@@ -1,11 +1,14 @@
 "use strict";
 
 import * as SaveGame from "./SaveGame.js";
+import Field from "./Field.js";
 
-const deleteSaves = () => {
-    SaveGame.deleteSaves();
+const BASE_DIRECTORY = "/www"
+
+async function deleteSaves(){
+    await SaveGame.deleteSaves();
     printSaves();
-};
+}
 
 document.querySelector("#delete-saves").addEventListener("click", deleteSaves);
 
@@ -13,17 +16,17 @@ window.addEventListener("load", (event) => {
     printSaves();
 });
 
-function printSaves() {
+async function printSaves() {
     clearSavesContainer();
-    const games = getSavedGames();
+    const games = await getSavedGames();
 
-    if (!games) {
+    if (games.length === 0) {
         redirectToNewGame();
         return;
     }
 
-    games.forEach((element, ind) => {
-        const saveElement = createSaveElement(element, ind);
+    games.forEach((element) => {
+        const saveElement = createSaveElement(element, element.id);
         document.querySelector("#saves").append(saveElement);
     });
 
@@ -35,12 +38,23 @@ function clearSavesContainer() {
     document.querySelector("#saves").innerHTML = "";
 }
 
-function getSavedGames() {
-    return JSON.parse(localStorage.getItem("savedGames"));
+async function getSavedGames() {
+    try {
+        const response = await fetch(`../api/games.php`);
+
+        if (!response.ok) {
+            return null;
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error getting games:", error);
+        return null;
+    }
 }
 
 function redirectToNewGame() {
-    window.location.replace("/new.html");
+    window.location.href = "new.php";
 }
 
 function createSaveElement(element, index) {
@@ -61,7 +75,7 @@ function createSaveNameDiv(element, index) {
     saveNameDiv.className = "col-md-6 d-flex align-items-center";
 
     const link = document.createElement("a");
-    link.href = `/play.html?id=${index + 1}`;
+    link.href = `${BASE_DIRECTORY}/game/play.php?id=${index}`;
     link.append(element.name);
 
     saveNameDiv.append(link);
@@ -88,11 +102,12 @@ function createDeleteButton(index) {
     return deleteButton;
 }
 
-function attachDeleteButtonHandlers() {
+async function attachDeleteButtonHandlers() {
     document.querySelectorAll(".delete-button").forEach((elem) => {
-        elem.addEventListener("click", (event) => {
-            SaveGame.deleteSave(event.target.id);
-            printSaves();
+        elem.addEventListener("click", async (event) => {
+            if(await SaveGame.deleteSave(event.target.id)){
+                await printSaves();
+            }
         });
     });
 }

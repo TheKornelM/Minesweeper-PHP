@@ -473,3 +473,5 @@ composer.lock
 *.sass.map
 *.scss.map
 env.php
+/www/game/boards
+/data

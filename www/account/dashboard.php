@@ -3,10 +3,10 @@ session_start();
 ?>
 <h1>
     <?php
-    if (isset($_SESSION['email'])) {
-        echo $_SESSION['email'];
+    if (isset($_SESSION['username'])) {
+        echo $_SESSION['username'];
     } else {
-        echo "No email found in session.";
+        echo "No username found in session.";
     }
     ?>
 </h1>

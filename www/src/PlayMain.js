@@ -6,10 +6,10 @@ import State from "./State.js";
 import * as Popup from "./Popup.js";
 import Stopwatch from "./Stopwatch.js";
 
-let game = loadGame() || newGame();
+let game = await loadGame() || newGame();
 
 if (!game) {
-    window.location.href = "new.html";
+    window.location.href = "new.php";
 }
 
 const bw = new BoardView(game.board);
@@ -46,12 +46,12 @@ function addEventListeners() {
     for (let button of document.getElementsByClassName("new-game")) {
         button.addEventListener(
             "click",
-            (event) => (window.location.href = "new.html")
+            (event) => (window.location.href = "new.php")
         );
     }
 
     document.getElementById("quit").addEventListener("click", (event) => {
-        window.location.href = "index.html";
+        window.location.href = "index.php";
     });
 }
 

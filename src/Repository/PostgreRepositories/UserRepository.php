@@ -106,4 +106,29 @@ class UserRepository implements UserRepositoryInterface
 
         return $statement->rowCount() > 0;
     }
+
+    public function getUserId(string $username): int
+    {
+        $normalizedUsername = strtolower($username);
+
+        $query = "SELECT id FROM userdata WHERE normalized_username = :username";
+        $statement = $this->databaseConnection->prepare($query);
+        $statement->bindParam(':username', $normalizedUsername);
+        $statement->execute();
+
+        $userRecord = $statement->fetch(\PDO::FETCH_ASSOC);
+
+        return $userRecord['id'];
+    }
+
+    public function userIdExists(int $userId): bool
+    {
+        $query = "SELECT id FROM userdata WHERE id = :id";
+        $statement = $this->databaseConnection->prepare($query);
+        $statement->bindParam(':id', $userId);
+        $statement->execute();
+
+        return $statement->rowCount() > 0;
+    }
+
 }
