@@ -61,11 +61,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
     <link rel="shortcut icon" href="https://cdn-icons-png.flaticon.com/512/295/295128.png">
+    <link rel="stylesheet" href="../style/mainpage.css" />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <title>Registration</title>
 </head>
 
-<body class="bg-light">
+<body>
 <div class="container p-5 d-flex flex-column align-items-center">
     <?php if ($message): ?>
         <div class="toast align-items-center text-white border-0"
@@ -87,7 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
             rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;">
         <div class="row text-center">
-            <i class="fa fa-user-circle-o fa-3x mt-1 mb-2" style="color: green;"></i>
+            <i class="fa fa-user-circle-o fa-3x mt-1 mb-2"></i>
             <h5 class="p-4" style="font-weight: 700;">Create Your Account</h5>
         </div>
         <div class="mb-2">
@@ -116,8 +117,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
         <div class="mb-2 mt-4">
             <p class="text-center" style="font-weight: 600;
-                color: navy;">I have an Account <a href="login.php"
-                                                   style="text-decoration: none;">Login</a></p>
+                color: navy;"><a href="login.php"
+                                                   style="text-decoration: none;">Login to exist account</a></p>
         </div>
     </form>
 </div>

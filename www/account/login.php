@@ -47,11 +47,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
     <link rel="shortcut icon" href="https://cdn-icons-png.flaticon.com/512/295/295128.png">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="../css/login.css">
+    <link rel="stylesheet" href="../style/mainpage.css" />
     <title>Login Page</title>
 </head>
 
-<body class="bg-light">
+<body>
 <div class="container p-5 d-flex flex-column align-items-center">
     <?php if ($message): ?>
         <div class="toast align-items-center text-white <?php echo $toastClass; ?> border-0" role="alert" aria-live="assertive" aria-atomic="true">
@@ -65,11 +65,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <?php endif; ?>
     <form action="" method="post" class="form-control mt-5 p-4" style="height:auto; width:380px; box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;">
         <div class="row">
-            <i class="fa fa-user-circle-o fa-3x mt-1 mb-2" style="text-align: center; color: green;"></i>
+            <i class="fa fa-user-circle-o fa-3x mt-1 mb-2" style="text-align: center"></i>
             <h5 class="text-center p-4" style="font-weight: 700;">Login Into Your Account</h5>
         </div>
         <div class="col-mb-3">
-            <label for="username"><i class="fa fa-envelope"></i> Username</label>
+            <label for="username"><i class="fa fa-user"></i> Username</label>
             <input type="text" name="username" id="username" class="form-control" required>
         </div>
         <div class="col mb-3 mt-3">
