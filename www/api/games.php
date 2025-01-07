@@ -17,6 +17,8 @@ use Managers\UserManager;
 use Utils\SetHeader;
 use Utils\SaveManagerFactory;
 
+$saveManager = SaveManagerFactory::create($conn);
+
 // Check if the necessary data is provided
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if(!isAuthenticated()){
@@ -25,7 +27,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     $userId = getUserId($conn);
-    $saveManager = SaveManagerFactory::create($conn);
 
     SetHeader::ToJson();
     echo json_encode($saveManager->showSaves($userId));
@@ -35,7 +36,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         return;
     }
     $userId = getUserId($conn);
-    $saveManager = SaveManagerFactory::create($conn);
 
     SetHeader::ToJson();
     echo json_encode($saveManager->deleteUserSaves($userId));

@@ -17,6 +17,10 @@ use Managers\UserManager;
 use Utils\SetHeader;
 use Utils\SaveManagerFactory;
 
+$saveManager = SaveManagerFactory::create($conn);
+$userRepo = new UserRepository($conn);
+$userManager = new UserManager($userRepo);
+
 // Check if the necessary data is provided
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     session_start();
@@ -24,9 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_SESSION['username'])){
         http_response_code(404);
     }
-
-    $userRepo = new UserRepository($conn);
-    $userManager = new UserManager($userRepo);
 
     $userId = $userManager->getUserId($_SESSION['username']);
     // Get raw POST data
@@ -52,7 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $saveManager = SaveManagerFactory::create($conn);
     SetHeader::ToJson();
     echo json_encode($saveManager->createSave($userId, $saveName, $boardState, $elapsedTime));
 } else if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -60,9 +60,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         http_response_code(404);
         return;
     }
-
-    $userRepo = new UserRepository($conn);
-    $userManager = new UserManager($userRepo);
 
     $userId = $userManager->getUserId($_SESSION['username']);
     $gameId = $_GET["id"] ?? null;
@@ -73,7 +70,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $saveManager = SaveManagerFactory::create($conn);
     $gameData = $saveManager->getBoardData($userId, $gameId);
 
     if (!$gameData) {
@@ -109,8 +105,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $saveId = $data['saveId'];
     $userId = getUserId($conn);
-
-    $saveManager = SaveManagerFactory::create($conn);
 
     SetHeader::ToJson();
 
