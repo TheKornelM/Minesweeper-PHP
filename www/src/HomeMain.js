@@ -20,7 +20,7 @@ async function printSaves() {
     clearSavesContainer();
     const games = await getSavedGames();
 
-    if (!games) {
+    if (games.length === 0) {
         redirectToNewGame();
         return;
     }
