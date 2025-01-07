@@ -2,6 +2,8 @@
 
 namespace Repository\PostgreRepositories;
 
+use PDO;
+use PDOException;
 use Repository\Interfaces\SaveRepositoryInterface;
 use DTOs\ShowSavesDto;
 use Validators\Result;
@@ -44,6 +46,43 @@ class SaveRepository implements SaveRepositoryInterface
         }
 
         return $saves;
+    }
+
+    public function getBoardData(int $userId, int $gameId)
+    {
+        try {
+            $query = "SELECT g.id, g.save_name, g.board_file_name, g.saved_at, et.hour, et.minute, et.second, et.count 
+                  FROM games g 
+                  JOIN elapsed_times et ON g.elapsed_time_id = et.id
+                  WHERE g.user_id = :userId AND g.id = :gameId";
+
+            $stmt = $this->databaseConnection->prepare($query);
+            $stmt->bindParam(":userId", $userId, PDO::PARAM_INT);
+            $stmt->bindParam(":gameId", $gameId, PDO::PARAM_INT);
+
+            $stmt->execute();
+
+            $game = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($game) {
+                // Read the board JSON file
+                $baseDir = dirname(__DIR__, 3);
+                $boardFilePath = $baseDir . "/data/boards/" . $game["board_file_name"];
+
+                if (file_exists($boardFilePath)) {
+                    $game["board_data"] = json_decode(file_get_contents($boardFilePath), true);
+                } else {
+                    $game["board_data"] = null;
+                }
+            }
+
+            return $game ? $game : null;
+
+        } catch (PDOException $e) {
+            // Handle errors (optional: log errors)
+            error_log("Database error: " . $e->getMessage());
+            return null;
+        }
     }
 
     /**

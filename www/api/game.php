@@ -73,7 +73,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $gameData = loadGameFromDatabase($userId, $gameId);
+    $saveManager = SaveManagerFactory::create($conn);
+    $gameData = $saveManager->getBoardData($userId, $gameId);
 
     if (!$gameData) {
         http_response_code(404);
@@ -81,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-// Remove unnecessary fields or transform if needed
+    // Remove unnecessary fields or transform if needed
     $gameData["elapsed_time"] = [
         "hour" => $gameData["hour"],
         "minute" => $gameData["minute"],
@@ -140,7 +141,6 @@ function loadGameFromDatabase($userId, $gameId) {
     global $conn;
 
     try {
-        // Query to fetch the saved game
         $query = "SELECT g.id, g.save_name, g.board_file_name, g.saved_at, et.hour, et.minute, et.second, et.count 
                   FROM games g 
                   JOIN elapsed_times et ON g.elapsed_time_id = et.id
@@ -152,7 +152,6 @@ function loadGameFromDatabase($userId, $gameId) {
 
         $stmt->execute();
 
-        // Fetch the saved game metadata
         $game = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($game) {

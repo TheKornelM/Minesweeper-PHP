@@ -26,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     $userId = getUserId($conn);
     $saveManager = SaveManagerFactory::create($conn);
+
     SetHeader::ToJson();
     echo json_encode($saveManager->showSaves($userId));
 } else if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
@@ -33,11 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         http_response_code(404);
         return;
     }
-
-    $data = json_decode(file_get_contents('php://input'), true, JSON_NUMERIC_CHECK);
-
     $userId = getUserId($conn);
-
     $saveManager = SaveManagerFactory::create($conn);
 
     SetHeader::ToJson();
