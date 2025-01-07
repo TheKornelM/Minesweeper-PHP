@@ -12,7 +12,7 @@ You need to pass the following environment variables:
 - `POSTGRES_PASSWORD`: Default Postgres user password
 - `POSTGRES_DB`: Default database name
 
-Run the `docker-compose` command from the project's root directory. You can pass environment variables as arguments or within an environment file. For example, you can run
+Run the `docker-compose` command from the project's root directory. You can pass environment variables within an environment file. For example, you can run
 `docker-compose --env-file .env up` where `.env` is the name of the environment file name.
 
 This will create a PostgreSQL Docker container with the initialized schema.
