@@ -25,12 +25,6 @@ class SaveRepository implements SaveRepositoryInterface
         $this->databaseConnection = $databaseConnection;
     }
 
-    /**
-     * Retrieves save IDs and names for a given user.
-     *
-     * @param int $userId The ID of the user.
-     * @return ShowSavesDto[] An array of ShowSavesDto objects.
-     */
     public function getSaveIdsWithNames(int $userId): array
     {
         $query = "SELECT id, save_name FROM games WHERE user_id = :userId";
@@ -85,12 +79,6 @@ class SaveRepository implements SaveRepositoryInterface
         }
     }
 
-    /**
-     * Retrieves all save data for a specific save ID.
-     *
-     * @param int $saveId The ID of the save.
-     * @return array|null The save data or null if not found.
-     */
     public function getSaveData(int $saveId)
     {
         $query = "SELECT * FROM games WHERE id = :id";
@@ -101,15 +89,6 @@ class SaveRepository implements SaveRepositoryInterface
         return $statement->fetch(\PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Creates a new save for a user, including board state and elapsed time.
-     *
-     * @param int $userId The ID of the user.
-     * @param string $saveName The name of the save.
-     * @param string $boardState The board state in JSON format.
-     * @param array $elapsedTime An associative array containing elapsed time details.
-     * @return Result The result of the save operation.
-     */
     public function createSave(int $userId, string $saveName, $boardState, $elapsedTime): Result
     {
         $fileName = uniqid('board_', true) . '.json';
@@ -142,12 +121,6 @@ class SaveRepository implements SaveRepositoryInterface
         }
     }
 
-    /**
-     * Deletes a save by its ID, including associated elapsed time and JSON file.
-     *
-     * @param int $saveId The ID of the save to delete.
-     * @return Result The result of the deletion process.
-     */
     public function deleteSaveById(int $saveId): Result
     {
         try {
@@ -182,12 +155,6 @@ class SaveRepository implements SaveRepositoryInterface
         }
     }
 
-    /**
-     * Deletes all saves for a user, including associated elapsed times and JSON files.
-     *
-     * @param int $userId The ID of the user whose saves are to be deleted.
-     * @return Result The result of the deletion process.
-     */
     public function deleteUserSaves(int $userId): Result
     {
         try {

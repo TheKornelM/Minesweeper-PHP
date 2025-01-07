@@ -24,13 +24,6 @@ class UserRepository implements UserRepositoryInterface
         $this->databaseConnection = $databaseConnection;
     }
 
-    /**
-     * Verifies if the provided email and password match a user in the database.
-     *
-     * @param string $username    The email address of the user.
-     * @param string $password The plaintext password entered by the user.
-     * @return bool Returns true if the credentials are valid, otherwise false.
-     */
     public function isValidCredentials(string $username, string $password): bool
     {
         $query = "SELECT password FROM userdata WHERE username = :username";
@@ -48,14 +41,6 @@ class UserRepository implements UserRepositoryInterface
         return password_verify($password, $hashedPassword);
     }
 
-    /**
-     * Registers a new user by inserting their details into the database.
-     *
-     * @param string $username The username chosen by the user.
-     * @param string $email    The email address of the user.
-     * @param string $password The hashed password of the user.
-     * @return bool Returns true if the user is successfully registered, otherwise false.
-     */
     public function registerUser(string $username, string $email, string $password): bool
     {
         $normalizedUsername = strtolower($username);
@@ -71,12 +56,6 @@ class UserRepository implements UserRepositoryInterface
         return $statement->execute();
     }
 
-    /**
-     * Checks if an email address already exists in the database.
-     *
-     * @param string $email The email address to check.
-     * @return bool Returns true if the email exists, otherwise false.
-     */
     public function emailExists(string $email): bool
     {
         $normalizedEmail = strtolower($email);
@@ -89,12 +68,6 @@ class UserRepository implements UserRepositoryInterface
         return $statement->rowCount() > 0;
     }
 
-    /**
-     * Checks if a username already exists in the database.
-     *
-     * @param string $username The username to check.
-     * @return bool Returns true if the username exists, otherwise false.
-     */
     public function usernameExists(string $username): bool
     {
         $normalizedUsername = strtolower($username);
