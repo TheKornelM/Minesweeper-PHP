@@ -40,7 +40,7 @@ function clearSavesContainer() {
 
 async function getSavedGames() {
     try {
-        const response = await fetch(`savegame.php`);
+        const response = await fetch(`../api/games.php`);
 
         if (!response.ok) {
             return null;

@@ -61,10 +61,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         return;
     }
 
-    $userId = getUserId($conn);
-    $saveManager = SaveManagerFactory::create($conn);
-    SetHeader::ToJson();
-    echo json_encode($saveManager->showSaves($userId));
+    $userRepo = new UserRepository($conn);
+    $userManager = new UserManager($userRepo);
+
+    $userId = $userManager->getUserId($_SESSION['username']);
+    $gameId = $_GET["id"] ?? null;
+
+    if (!$gameId) {
+        http_response_code(400);
+        echo json_encode(["error" => "Game ID is required"]);
+        exit;
+    }
+
+    $gameData = loadGameFromDatabase($userId, $gameId);
+
+    if (!$gameData) {
+        http_response_code(404);
+        echo json_encode(["error" => "Game not found"]);
+        exit;
+    }
+
+// Remove unnecessary fields or transform if needed
+    $gameData["elapsed_time"] = [
+        "hour" => $gameData["hour"],
+        "minute" => $gameData["minute"],
+        "second" => $gameData["second"],
+        "count" => $gameData["count"],
+    ];
+    unset($gameData["hour"], $gameData["minute"], $gameData["second"], $gameData["count"]);
+
+    echo json_encode($gameData);
+
 } else if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     if (!isAuthenticated()) {
         http_response_code(404);
@@ -85,12 +112,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $saveManager = SaveManagerFactory::create($conn);
 
     SetHeader::ToJson();
-
-    // Delete all saves if saveId equals to "*"
-    if($saveId == "*"){
-        echo json_encode($saveManager->deleteUserSaves($userId));
-        return;
-    }
 
     if(!is_int($saveId)){
         http_response_code(400);
@@ -113,4 +134,44 @@ function getUserId(\PDO $conn): int
     $userManager = new UserManager($userRepo);
 
     return $userManager->getUserId($_SESSION['username']);
+}
+
+function loadGameFromDatabase($userId, $gameId) {
+    global $conn;
+
+    try {
+        // Query to fetch the saved game
+        $query = "SELECT g.id, g.save_name, g.board_file_name, g.saved_at, et.hour, et.minute, et.second, et.count 
+                  FROM games g 
+                  JOIN elapsed_times et ON g.elapsed_time_id = et.id
+                  WHERE g.user_id = :userId AND g.id = :gameId";
+
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(":userId", $userId, PDO::PARAM_INT);
+        $stmt->bindParam(":gameId", $gameId, PDO::PARAM_INT);
+
+        $stmt->execute();
+
+        // Fetch the saved game metadata
+        $game = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($game) {
+            // Read the board JSON file
+            $baseDir = dirname(__DIR__, 2);
+            $boardFilePath = $baseDir . "/data/boards/" . $game["board_file_name"];
+
+            if (file_exists($boardFilePath)) {
+                $game["board_data"] = json_decode(file_get_contents($boardFilePath), true);
+            } else {
+                $game["board_data"] = null; // Handle missing file gracefully
+            }
+        }
+
+        return $game ? $game : null;
+
+    } catch (PDOException $e) {
+        // Handle errors (optional: log errors)
+        error_log("Database error: " . $e->getMessage());
+        return null;
+    }
 }

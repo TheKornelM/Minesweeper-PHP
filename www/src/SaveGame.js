@@ -38,7 +38,7 @@ export async function deleteSaves()
 {
     //localStorage.removeItem("savedGames");
     try {
-        const response = await fetch('savegame.php', {
+        const response = await fetch('../api/games.php', {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
@@ -74,7 +74,7 @@ export const getSaveName = () => `${CurrentDate.date()} ${CurrentDate.time()}`;
 export async function saveGame(saveName, game, elapsedTime) {
 
     try {
-        const response = await fetch('saveGame.php', {
+        const response = await fetch('../api/game.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -110,7 +110,7 @@ export async function loadGame() {
     }
 
     try {
-        const response = await fetch(`load.php?id=${id}`);
+        const response = await fetch(`../api/game.php?id=${id}`);
         if (!response.ok) {
             return null;
         }
@@ -175,7 +175,7 @@ export function newGame() {
  */
 export async function deleteSave(id) {
     try {
-        const response = await fetch('savegame.php', {
+        const response = await fetch('../api/game.php', {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
